@@ -12,7 +12,7 @@
 			"link": "/about"
 		},
 		{
-			"title": "Works",
+			"title": "Services",
 			"link": "/works"
 		},
 		{
@@ -20,7 +20,7 @@
 			"link": "/news"
 		},
 		{
-			"title": "Contacts",
+			"title": "Contact us",
 			"link": "/contact"
 		}
 	],
