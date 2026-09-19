@@ -2,19 +2,39 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import PhoneCall from '../components/art/PhoneCall.astro';
+import DashMock from '../components/art/DashMock.astro';
+import SerpMock from '../components/art/SerpMock.astro';
+import CodeWindow from '../components/art/CodeWindow.astro';
+import tileWhatsapp from '../assets/tiles/tile-whatsapp.png';
+import tileCloud from '../assets/tiles/tile-cloud.png';
 import gsquare from '../assets/clients/gsquare-logo.webp';
 import rayala from '../assets/clients/rayala-logo.svg';
 import seagreen from '../assets/clients/seagreen-logo.jpg';
 import gra from '../assets/clients/gra-logo.png';
 import logonw from '../assets/clients/logonw-logo.webp';
 
-const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+const services = await getCollection('services');
+const svcTitle = (id: string) => services.find((s) => s.id === id)?.data.title ?? id;
+
+const showcase = [
+  { key: 'saas', len: 250, Art: DashMock, title: 'SaaS products, built to scale.', text: 'From first version to paying customers. We engineer the dashboard, billing, permissions and infrastructure behind your software.', href: '/services/saas-development/', cta: 'Explore SaaS development' },
+  { key: 'marketing', len: 250, Art: SerpMock, title: 'Marketing that shows up on page one.', text: 'Technical SEO, content and paid campaigns, run by the same engineers who build your site.', href: '/services/seo-digital-marketing/', cta: 'Explore digital marketing' },
+  { key: 'web', len: 250, Art: CodeWindow, title: 'Websites that load fast and get found.', text: 'Modern, accessible sites and web apps built for speed, search and conversion.', href: '/services/web-development/', cta: 'Explore web development' },
+];
 
 const chapters = [
-  { n: '01', title: 'Build it right.', text: 'Custom web apps, Android apps, APIs and CRM integrations, engineered by people who have shipped them in production.', href: '/services/software-development/', cta: 'Software development' },
-  { n: '02', title: 'Get found.', text: 'Technical SEO, content and paid media, built into the product from the first commit instead of bolted on after launch.', href: '/services/seo-digital-marketing/', cta: 'SEO & digital marketing' },
-  { n: '03', title: 'Scale it safely.', text: 'AWS architecture, automation and compliant WhatsApp messaging that keep working as your customer base grows.', href: '/services/cloud-aws/', cta: 'Cloud & AWS' },
+  { title: 'Detects every call.', text: 'CORE runs quietly on your agents\' Android phones and notices each call the moment it starts. Nobody has to press a thing.' },
+  { title: 'Records it. Stores it safely.', text: 'Audio uploads to your own S3 bucket, and retries automatically when the phone is offline.' },
+  { title: 'Syncs to your CRM.', text: 'Number, agent, duration and recording link land in Salesforce, Zoho, HubSpot or your own system.' },
 ];
+
+const more = [
+  { id: 'whatsapp-messaging', dark: false, img: tileWhatsapp, alt: 'A phone showing a business messaging conversation with a customer', width: 'max-w-[24rem]' },
+  { id: 'cloud-aws', dark: true, img: tileCloud, alt: 'Four chip-style layers for network, storage, database and app, separated in an exploded view', width: 'max-w-[36rem]' },
+].map((m) => ({ ...m, svc: services.find((s) => s.id === m.id)! })).filter((m) => m.svc);
+
+const statement = 'Great software is not found by accident. We build it with the engineers who write the code, and we make sure the people who need it can find it.'.split(' ');
 
 const clients = [
   { name: 'Gsquare Technologies', logo: gsquare, url: 'https://www.gsquare-tech.com' },
@@ -26,7 +46,7 @@ const clients = [
 ---
 
 <Base
-  title="Skandava — Software Development, AWS & SEO Company"
+  title="Skandava: Software Development, AWS & SEO Company"
   description="Skandava is an engineering-led team building custom software, AWS cloud systems, WhatsApp messaging platforms and SEO that gets you found. Book a free consultation."
   jsonLd={[{
     '@context': 'https://schema.org',
@@ -38,97 +58,98 @@ const clients = [
     parent: { '@id': 'https://skandava.com/#organization' },
   }]}
 >
-  <canvas id="scene" aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-0 transition-opacity duration-1000 max-md:!opacity-60"></canvas>
+  <canvas id="scene" aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-0 transition-opacity duration-1000"></canvas>
 
   <div id="scene-zone" class="relative z-10">
-    <!-- Hero -->
-    <section class="relative flex min-h-[100svh] items-center pt-24">
-      <div class="glow" aria-hidden="true"></div>
-      <div class="container-x">
-        <p class="eyebrow mb-6">Software · Cloud · Growth</p>
-        <h1 class="h1 max-w-4xl">We engineer software.<br /><span class="gradient-text">We engineer growth.</span></h1>
-        <p class="lead mt-8 max-w-xl">
-          Skandava is an engineering-led team building custom software, AWS cloud systems, WhatsApp messaging and SEO that gets you found.
-        </p>
-        <div class="mt-10 flex flex-wrap gap-4">
-          <a href="/contact/" class="btn btn-primary">Book a free consultation</a>
-          <a href="/services/" class="btn btn-ghost">Explore services</a>
-        </div>
+    <section id="hero" class="flex min-h-[100svh] flex-col items-center px-5 pt-28 text-center sm:pt-36">
+      <a href="/core/" class="link text-[1.3rem] font-semibold tracking-tight">New: CORE, the call recorder for sales teams</a>
+      <h1 class="h1 mt-4 max-w-4xl">Engineered to grow.</h1>
+      <p class="lead mt-5 max-w-[40rem]">Custom software, cloud infrastructure and search marketing from one engineering team.</p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <a href="/contact/" class="btn btn-primary">Book a consultation</a>
+        <a href="/services/" class="link text-[1.2rem]">Explore services</a>
       </div>
     </section>
 
-    <!-- Scroll story: all copy is real HTML; JS only adds the sticky/animated behaviour -->
-    <section id="story" class="story">
-      <div class="story-stage">
+    <!-- All copy is real HTML. JS only pins each stage and moves the 3D objects. -->
+    {showcase.map((b, i) => (
+      <section data-svc={b.key} class="svc-block" style={`--len:${b.len}vh`} aria-labelledby={`${b.key}-h`}>
+        <div class="svc-sticky">
+          <div class="container-x">
+            <div class="svc-text">
+              <h2 id={`${b.key}-h`} class="h2">{b.title}</h2>
+              <p class="lead mt-5 max-w-[26rem]">{b.text}</p>
+              <a href={b.href} class="link mt-6 inline-block text-[1.2rem]">{b.cta}</a>
+            </div>
+            <div class="svc-art"><b.Art /></div>
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <section data-svc="core" class="svc-block" style="--len:350vh" aria-labelledby="core-h">
+      <div class="svc-sticky">
         <div class="container-x">
-          {chapters.map((c) => (
-            <article data-chapter class="chapter max-w-xl">
-              <p class="eyebrow mb-4">{c.n}</p>
-              <h2 class="h2">{c.title}</h2>
-              <p class="lead mt-5">{c.text}</p>
-              <a href={c.href} class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-accent-2 hover:underline">{c.cta} →</a>
-            </article>
-          ))}
+          <div class="svc-text chapters">
+            {chapters.map((c, i) => (
+              <article data-chapter class="chapter">
+                {i === 0 ? <h2 id="core-h" class="h2">{c.title}</h2> : <h3 class="h2">{c.title}</h3>}
+                <p class="lead mt-5 max-w-[26rem]">{c.text}</p>
+                <a href="/core/" class="link mt-6 inline-block text-[1.2rem]">Learn more about CORE</a>
+              </article>
+            ))}
+          </div>
+          <div class="svc-art"><PhoneCall /></div>
         </div>
       </div>
     </section>
   </div>
 
-  <div class="relative z-10 bg-bg">
-    <!-- Services -->
-    <section class="container-x py-28" aria-labelledby="services-h">
-      <p class="eyebrow mb-4" data-reveal>What we do</p>
-      <h2 id="services-h" class="h2 max-w-2xl" data-reveal>One team for the code, the cloud and the customers.</h2>
-      <div class="mt-14 grid gap-5 sm:grid-cols-2">
-        {services.map((s, i) => (
-          <a href={`/services/${s.id}/`} class="card group" data-reveal style={`transition-delay:${i * 60}ms`}>
-            <h3 class="text-2xl font-semibold">{s.data.title}</h3>
-            <p class="mt-3 text-muted">{s.data.summary}</p>
-            <span class="mt-6 inline-block text-sm font-semibold text-accent-2 transition group-hover:translate-x-1">Learn more →</span>
-          </a>
-        ))}
-      </div>
+  <div class="relative z-10 bg-white">
+    <section id="statement" class="container-x py-24 sm:py-32" aria-label="What we believe">
+      <p class="statement mx-auto max-w-4xl">
+        {statement.map((w) => <><span class="word">{w}</span>{' '}</>)}
+      </p>
     </section>
 
-    <!-- CORE spotlight -->
-    <section class="container-x pb-28" aria-labelledby="core-h">
-      <div class="relative overflow-hidden rounded-3xl border border-line bg-surface p-8 sm:p-14" data-reveal>
-        <div class="glow glow-core" aria-hidden="true"></div>
-        <p class="eyebrow mb-4">Our product</p>
-        <h2 id="core-h" class="h2 max-w-2xl">CORE: every offline call, <span class="gradient-text">recorded, synced, visible.</span></h2>
-        <p class="lead mt-6 max-w-2xl">
-          When agents switch to personal phones because VoIP gets flagged as spam, your CRM goes blind. CORE is an Android app that automatically records those calls and syncs them to your CRM.
-        </p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a href="/core/" class="btn btn-primary">See how CORE works</a>
-          <a href="/contact/" class="btn btn-ghost">Book a demo</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Clients -->
-    <section class="container-x pb-28" aria-labelledby="clients-h">
-      <h2 id="clients-h" class="eyebrow mb-8 text-center">Trusted by teams at</h2>
-      <ul class="flex flex-wrap items-center justify-center gap-4">
-        {clients.map((c) => (
-          <li class="flex h-20 w-44 items-center justify-center rounded-xl bg-white px-4">
-            {c.url ? (
-              <a href={c.url} rel="noopener" target="_blank" aria-label={c.name}>
-                <Image src={c.logo} alt={c.name} height={48} class="h-10 w-auto max-w-[9rem] object-contain" loading="lazy" />
-              </a>
-            ) : (
-              <Image src={c.logo} alt={c.name} height={48} class="h-10 w-auto max-w-[9rem] object-contain" loading="lazy" />
-            )}
+    <section class="mx-auto max-w-[1200px] px-3 pb-3" aria-labelledby="more-h">
+      <h2 id="more-h" class="h2 pb-14 text-center">And the rest of what we build.</h2>
+      <ul class="grid gap-3 md:grid-cols-2">
+        {more.map(({ svc, dark, img, alt, width }) => (
+          <li class:list={['tile flex min-h-[38rem] flex-col items-center px-6 pt-14 sm:px-10', dark ? 'tile-dark' : 'tile-light']}>
+            <h3 class="h3"><a href={`/services/${svc.id}/`} class="after:absolute after:inset-0">{svc.data.title}</a></h3>
+            <p class="sub mt-3 max-w-md text-[1.3rem] leading-snug tracking-tight">{svc.data.summary}</p>
+            <span class="link mt-4 text-[1.2rem]" aria-hidden="true">Learn more</span>
+            <Image src={img} alt={alt} class:list={['mx-auto mt-auto w-full pt-8', width]} loading="lazy" />
           </li>
         ))}
       </ul>
     </section>
 
-    <!-- CTA -->
-    <section class="container-x pb-8 text-center" aria-labelledby="cta-h">
-      <h2 id="cta-h" class="h2 mx-auto max-w-3xl">Have a product to build or a market to reach?</h2>
-      <p class="lead mx-auto mt-5 max-w-xl">Tell us where you are. We will tell you honestly what it takes.</p>
-      <a href="/contact/" class="btn btn-primary mt-8">Book a free consultation</a>
+    <section class="bg-fog py-20" aria-labelledby="clients-h">
+      <div class="container-x">
+        <h2 id="clients-h" class="mb-10 text-center text-2xl font-semibold tracking-tight">Trusted by teams at</h2>
+        <ul class="flex flex-wrap items-center justify-center gap-x-14 gap-y-8">
+          {clients.map((c) => (
+            <li class="flex h-14 items-center opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0">
+              {c.url ? (
+                <a href={c.url} rel="noopener" target="_blank" aria-label={c.name}><Image src={c.logo} alt={c.name} height={56} class="h-11 w-auto max-w-[9rem] object-contain mix-blend-multiply" loading="lazy" /></a>
+              ) : (
+                <Image src={c.logo} alt={c.name} height={56} class="h-11 w-auto max-w-[9rem] object-contain mix-blend-multiply" loading="lazy" />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="container-x py-32 text-center sm:py-44" aria-labelledby="cta-h">
+      <h2 id="cta-h" class="h2 mx-auto max-w-3xl">Tell us what you want to build.</h2>
+      <p class="lead mx-auto mt-5 max-w-xl">We will reply with an honest view of scope, timeline and next steps.</p>
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <a href="/contact/" class="btn btn-primary">Book a consultation</a>
+        <a href="/services/" class="link text-[1.2rem]">Explore services</a>
+      </div>
     </section>
   </div>
 
@@ -138,23 +159,30 @@ const clients = [
 </Base>
 
 <style is:global>
-  .glow {
-    position: absolute; inset: 0; pointer-events: none; z-index: -1;
-    background:
-      radial-gradient(60% 50% at 20% 20%, rgb(99 102 241 / .22), transparent 70%),
-      radial-gradient(50% 40% at 85% 70%, rgb(34 211 238 / .12), transparent 70%);
-  }
-  .glow-core { z-index: 0; opacity: .8; }
-  .glow-core ~ * { position: relative; z-index: 1; }
+  .statement { font-size: clamp(1.9rem, 4.6vw, 3.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1.12; text-wrap: balance; }
 
-  /* Story: stacked normally by default; sticky + crossfade once JS enables it */
-  .story .chapter { padding-block: 5rem; }
-  html.story-on .story { height: 320vh; }
-  html.story-on .story-stage { position: sticky; top: 0; height: 100svh; display: flex; align-items: center; }
-  html.story-on .story .container-x { position: relative; height: 100%; display: flex; align-items: center; }
-  html.story-on .story .chapter {
-    position: absolute; padding-block: 0; opacity: 0; transform: translateY(24px); pointer-events: none;
-    transition: opacity .6s ease, transform .6s ease;
+  /* Showcase: each block stacks normally; once WebGL runs it becomes a tall pinned stage. */
+  .svc-block { padding-block: 5rem; }
+  .svc-block .chapter { padding-block: 2rem; }
+  .svc-art { margin-top: 2.5rem; }
+  html.story-on .svc-art { display: none; }
+  html.story-on .svc-block { height: var(--len); padding-block: 0; }
+  html.story-on .svc-sticky {
+    position: sticky; top: 0; height: 100svh; display: flex; align-items: center; padding-top: 4rem;
+    opacity: var(--o, 0); transform: translateY(calc((1 - var(--o, 0)) * 26px)); pointer-events: none;
   }
-  html.story-on .story .chapter.is-active { opacity: 1; transform: none; pointer-events: auto; }
+  html.story-on .svc-sticky a { pointer-events: auto; }
+  html.story-on .svc-sticky > .container-x { width: 100%; }
+  html.story-on .svc-text { max-width: 30rem; }
+  html.story-on .chapters { display: grid; }
+  html.story-on .chapters .chapter {
+    grid-area: 1 / 1; padding-block: 0; opacity: 0; transform: translateY(18px);
+    transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1);
+  }
+  html.story-on .chapters .chapter.is-active { opacity: 1; transform: none; }
+  @media (max-width: 767px) {
+    html.story-on .svc-sticky { align-items: flex-start; padding-top: 6.5rem; text-align: center; }
+    html.story-on .svc-text { max-width: none; }
+    html.story-on .svc-text .lead { margin-inline: auto; }
+  }
 </style>

@@ -4,34 +4,28 @@ import { site } from '../site';
 const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<footer class="relative z-10 mt-32 border-t border-line bg-bg">
-  <div class="container-x py-16">
-    <div class="grid gap-12 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
-      <div>
-        <p class="font-display text-2xl font-semibold">{site.name}<span class="text-accent-2">.</span></p>
-        <p class="mt-4 max-w-xs text-sm text-muted">{site.tagline}</p>
-      </div>
+<footer class="relative z-10 bg-fog text-[12px] leading-relaxed text-muted">
+  <div class="mx-auto max-w-[1024px] px-5 py-12">
+    <a href="/" class="mb-6 inline-block" aria-label={`${site.name} home`}><img src="/logo.png" alt={site.name} width="100" height="26" class="h-[26px] w-auto" loading="lazy" /></a>
+    <p class="border-b border-line pb-4">Looking for something specific? <a class="text-link hover:underline" href="/contact/">Talk to us</a> or email <a class="text-link hover:underline" href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    <div class="grid gap-8 border-b border-line py-8 sm:grid-cols-3">
       <nav aria-label="Services">
-        <p class="eyebrow mb-4">Services</p>
-        <ul class="space-y-2 text-sm text-muted">
-          {services.map((s) => <li><a class="hover:text-white" href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
-        </ul>
+        <p class="mb-2 font-semibold text-ink">Services</p>
+        <ul class="space-y-1.5">{services.map((s) => <li><a class="hover:underline" href={`/services/${s.id}/`}>{s.data.title}</a></li>)}</ul>
+      </nav>
+      <nav aria-label="Product">
+        <p class="mb-2 font-semibold text-ink">Product</p>
+        <ul class="space-y-1.5"><li><a class="hover:underline" href="/core/">CORE caller app</a></li></ul>
       </nav>
       <nav aria-label="Company">
-        <p class="eyebrow mb-4">Company</p>
-        <ul class="space-y-2 text-sm text-muted">
-          <li><a class="hover:text-white" href="/core/">CORE Caller App</a></li>
-          <li><a class="hover:text-white" href="/about/">About</a></li>
-          <li><a class="hover:text-white" href="/blog/">Blog</a></li>
-          <li><a class="hover:text-white" href="/contact/">Contact</a></li>
+        <p class="mb-2 font-semibold text-ink">Company</p>
+        <ul class="space-y-1.5">
+          <li><a class="hover:underline" href="/about/">About</a></li>
+          <li><a class="hover:underline" href="/blog/">Blog</a></li>
+          <li><a class="hover:underline" href="/contact/">Contact</a></li>
         </ul>
       </nav>
-      <div>
-        <p class="eyebrow mb-4">Talk to us</p>
-        <a class="text-sm text-muted hover:text-white" href={`mailto:${site.email}`}>{site.email}</a>
-        <div class="mt-4"><a href="/contact/" class="btn btn-ghost">Book a free consultation</a></div>
-      </div>
     </div>
-    <p class="mt-14 border-t border-line pt-6 text-xs text-muted">© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+    <p class="pt-4">Copyright © {new Date().getFullYear()} {site.name}. All rights reserved.</p>
   </div>
 </footer>

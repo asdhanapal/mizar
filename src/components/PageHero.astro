@@ -1,13 +1,21 @@
 ---
-interface Props { eyebrow?: string; title: string; lead?: string }
-const { eyebrow, title, lead } = Astro.props;
+interface Props { title: string; lead?: string; crumbs?: { label: string; href?: string }[] }
+const { title, lead, crumbs = [] } = Astro.props;
 ---
 
-<section class="relative overflow-hidden pt-36 pb-16">
-  <div class="absolute inset-0 -z-10" style="background:radial-gradient(60% 60% at 15% 0%, rgb(99 102 241 / .22), transparent 70%)" aria-hidden="true"></div>
+<section class="pt-32 pb-14 text-center sm:pt-40">
   <div class="container-x">
-    {eyebrow && <p class="eyebrow mb-5">{eyebrow}</p>}
-    <h1 class="h1 max-w-4xl">{title}</h1>
-    {lead && <p class="lead mt-6 max-w-2xl">{lead}</p>}
+    {crumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" class="mb-5 text-sm text-muted">
+        {crumbs.map((c, i) => (
+          <>
+            {c.href ? <a href={c.href} class="hover:text-ink hover:underline">{c.label}</a> : <span>{c.label}</span>}
+            {i < crumbs.length - 1 && <span class="mx-2" aria-hidden="true">/</span>}
+          </>
+        ))}
+      </nav>
+    )}
+    <h1 class="h1 mx-auto max-w-4xl">{title}</h1>
+    {lead && <p class="lead mx-auto mt-6 max-w-2xl">{lead}</p>}
   </div>
 </section>

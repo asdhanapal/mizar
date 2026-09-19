@@ -32,9 +32,9 @@ const url = `https://skandava.com/blog/${entry.id}/`;
     publisher: { '@id': 'https://skandava.com/#organization' },
   }]}
 >
-  <PageHero eyebrow={data.tags[0] ?? 'Blog'} title={data.title} lead={data.description} />
+  <PageHero title={data.title} lead={data.description} crumbs={[{ label: 'Blog', href: '/blog/' }, { label: data.title }]} />
   <article class="container-x max-w-3xl pb-8">
-    <time datetime={data.pubDate.toISOString()} class="text-sm text-muted">{data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
+    <time datetime={data.pubDate.toISOString()} class="block text-center text-sm text-muted">{data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
     <div class="prose-site mt-6"><Content /></div>
   </article>
 </Base>

@@ -1,0 +1,30 @@
+---
+const code = `<span class="k">export async function</span> <span class="f">syncCall</span>(call: Call) {
+  <span class="k">const</span> url = <span class="k">await</span> <span class="f">presign</span>(call.id);
+  <span class="k">await</span> <span class="f">upload</span>(call.audio, url);
+  <span class="k">await</span> crm.<span class="f">log</span>({
+    lead: call.leadId,
+    recording: url,
+    seconds: call.duration,
+  });
+  <span class="c">// visible to managers in seconds</span>
+}`;
+---
+
+<div class="win" role="img" aria-label="Illustration: a code editor showing a function that uploads a call recording and logs it to a CRM">
+  <div class="bar"><i></i><i></i><i></i><span>sync-call.ts</span></div>
+<pre><code set:html={code} /></pre>
+</div>
+
+<style>
+  .win { width: min(100%, 30rem); margin-inline: auto; overflow: hidden; border-radius: 1.2rem; background: #1c1c1e; border: 1px solid #3a3a3c; box-shadow: 0 30px 60px -25px rgb(0 0 0 / .6); text-align: left; }
+  .bar { display: flex; align-items: center; gap: .4rem; padding: .7rem 1rem; background: #2c2c2e; }
+  .bar i { width: .7rem; height: .7rem; border-radius: 50%; background: #ff5f57; }
+  .bar i:nth-child(2) { background: #febc2e; }
+  .bar i:nth-child(3) { background: #28c840; }
+  .bar span { margin-left: .6rem; font-size: .78rem; color: rgb(255 255 255 / .7); }
+  pre { margin: 0; padding: 1.1rem 1.2rem 1.4rem; overflow: hidden; font: 500 .82rem/1.65 ui-monospace, SFMono-Regular, Menlo, monospace; color: #f5f5f7; }
+  .k { color: #ff7ab2; }
+  .f { color: #4fc1ff; }
+  .c { color: #7f8c98; }
+</style>

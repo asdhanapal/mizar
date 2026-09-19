@@ -1,27 +1,36 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import PageHero from '../../components/PageHero.astro';
+import PhoneCall from '../../components/art/PhoneCall.astro';
+import ChatMock from '../../components/art/ChatMock.astro';
+import SerpMock from '../../components/art/SerpMock.astro';
+import CodeWindow from '../../components/art/CodeWindow.astro';
+import ArchDiagram from '../../components/art/ArchDiagram.astro';
+import DashMock from '../../components/art/DashMock.astro';
 
 export async function getStaticPaths() {
   const services = await getCollection('services');
   return services.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
+const look: Record<string, { dark: boolean; Art: any }> = {
+  'saas-development': { dark: false, Art: DashMock },
+  'seo-digital-marketing': { dark: false, Art: SerpMock },
+  'web-development': { dark: true, Art: CodeWindow },
+  'whatsapp-messaging': { dark: false, Art: ChatMock },
+  'cloud-aws': { dark: false, Art: ArchDiagram },
+};
+
+const kinds: Record<string, string> = { 'saas-development': 'saas', 'seo-digital-marketing': 'cards', 'web-development': 'laptop', 'whatsapp-messaging': 'chat', 'cloud-aws': 'stack' };
+
 const { entry } = Astro.props;
 const { data } = entry;
+const { dark, Art } = look[entry.id] ?? { dark: false, Art: PhoneCall };
 const { Content } = await render(entry);
 const url = `https://skandava.com/services/${entry.id}/`;
 
 const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    name: data.title,
-    description: data.description,
-    url,
-    provider: { '@id': 'https://skandava.com/#organization' },
-  },
+  { '@context': 'https://schema.org', '@type': 'Service', name: data.title, description: data.description, url, provider: { '@id': 'https://skandava.com/#organization' } },
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -32,51 +41,104 @@ const jsonLd = [
     ],
   },
   ...(data.faq.length
-    ? [{
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: data.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-      }]
+    ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: data.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }]
     : []),
 ];
 ---
 
 <Base title={data.seoTitle} description={data.description} jsonLd={jsonLd}>
-  <PageHero eyebrow="Services" title={data.title} lead={data.summary} />
+  <script is:inline slot="head">
+    try {
+      var c = document.createElement('canvas');
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && (navigator.hardwareConcurrency || 8) > 2 && !(navigator.connection && navigator.connection.saveData) && (c.getContext('webgl2') || c.getContext('webgl'))) document.documentElement.classList.add('svc-on');
+    } catch (e) {}
+  </script>
 
-  <section class="container-x pb-16">
-    <div class="grid gap-5 sm:grid-cols-2">
+  <!-- 3D hero: pinned while you scroll. Without WebGL it falls back to a plain hero plus the 2D mockup below. -->
+  <section id="svc" class="svc" aria-label={data.title}>
+    <div class="svc-stage">
+      <canvas id="stage" data-kind={kinds[entry.id]} aria-hidden="true" class="svc-canvas"></canvas>
+      <div class="container-x svc-inner">
+        <div class="svc-copy">
+          <nav aria-label="Breadcrumb" class="mb-5 text-sm text-muted">
+            <a href="/services/" class="hover:text-ink hover:underline">Services</a><span class="mx-2" aria-hidden="true">/</span><span>{data.title}</span>
+          </nav>
+          <h1 class="h1" style="font-size:clamp(2.8rem,6.4vw,5rem)">{data.title}</h1>
+          <p class="lead mt-6">{data.summary}</p>
+          <div class="svc-cta mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <a href="/contact/" class="btn btn-primary">Book a consultation</a>
+            <a href="#what-h" class="link text-[1.2rem]">See what you get</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="svc-fallback mx-auto mt-16 max-w-[1200px] px-3">
+    <div class:list={['tile overflow-hidden px-6 py-16 sm:py-24', dark ? 'tile-dark' : 'tile-light']}><Art /></div>
+  </section>
+
+<section class="container-x py-28" aria-labelledby="what-h">
+    <h2 id="what-h" class="h2 max-w-2xl">What you get.</h2>
+    <div class="mt-14 grid gap-x-14 gap-y-12 sm:grid-cols-2">
       {data.features.map((f) => (
-        <div class="card" data-reveal>
-          <h2 class="text-xl font-semibold">{f.title}</h2>
-          <p class="mt-2 text-muted">{f.text}</p>
+        <div>
+          <h3 class="text-[1.6rem]">{f.title}</h3>
+          <p class="mt-3 text-[1.1rem] leading-snug text-muted">{f.text}</p>
         </div>
       ))}
     </div>
   </section>
 
-  <section class="container-x max-w-3xl pb-16">
-    <div class="prose-site"><Content /></div>
+  <section class="bg-fog py-24">
+    <div class="container-x max-w-3xl"><div class="prose-site"><Content /></div></div>
   </section>
 
   {data.faq.length > 0 && (
-    <section class="container-x max-w-3xl pb-16" aria-labelledby="faq-h">
-      <h2 id="faq-h" class="h2 mb-8">Frequently asked questions</h2>
+    <section class="container-x max-w-3xl py-28" aria-labelledby="faq-h">
+      <h2 id="faq-h" class="h2 mb-10">Questions we hear a lot.</h2>
       <div class="divide-y divide-line border-y border-line">
         {data.faq.map((f) => (
-          <details class="group py-5">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
-              {f.q}<span class="text-accent-2 transition group-open:rotate-45" aria-hidden="true">+</span>
+          <details class="group py-6">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-[1.3rem] font-semibold tracking-tight">
+              {f.q}<span class="text-2xl font-light text-muted transition group-open:rotate-45" aria-hidden="true">+</span>
             </summary>
-            <p class="mt-3 text-muted">{f.a}</p>
+            <p class="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-muted">{f.a}</p>
           </details>
         ))}
       </div>
     </section>
   )}
 
-  <section class="container-x text-center">
-    <h2 class="h2 mx-auto max-w-2xl">Let's talk about {data.title.toLowerCase()}.</h2>
-    <a href="/contact/" class="btn btn-primary mt-8">Book a free consultation</a>
+  <section class="container-x pb-28 text-center">
+    <h2 class="h2 mx-auto max-w-2xl">Want {data.title.toLowerCase()} done properly?</h2>
+    <a href="/contact/" class="btn btn-primary mt-9">Book a consultation</a>
   </section>
+
+  <script>
+    import '../../scripts/service';
+  </script>
 </Base>
+
+<style is:global>
+  .svc-canvas { display: none; }
+  .svc-inner { padding-top: 8rem; text-align: center; }
+  .svc-copy .lead { margin-inline: auto; max-width: 40rem; }
+  .svc-cta { justify-content: center; }
+
+  html.svc-on .svc { height: 230vh; }
+  html.svc-on .svc-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+  html.svc-on .svc-canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .9s ease; }
+  html.svc-on .svc-inner { position: relative; display: flex; align-items: center; height: 100%; padding-top: 4rem; text-align: left; }
+  html.svc-on .svc-copy { max-width: 31rem; }
+  html.svc-on .svc-copy .lead { margin-inline: 0; }
+  html.svc-on .svc-cta { justify-content: flex-start; }
+  html.svc-on .svc-fallback { display: none; }
+  @media (max-width: 767px) {
+    html.svc-on .svc-inner { align-items: flex-start; padding-top: 6.5rem; text-align: center; }
+    html.svc-on .svc-copy { max-width: none; }
+    html.svc-on .svc-copy .lead { margin-inline: auto; }
+    html.svc-on .svc-cta { justify-content: center; }
+  }
+</style>
+

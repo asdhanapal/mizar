@@ -6,16 +6,16 @@ import PageHero from '../../components/PageHero.astro';
 const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<Base title="Blog — Software, SEO & Growth Insights" description="Practical articles on software development, SEO, cloud and customer communication from the Skandava team.">
-  <PageHero eyebrow="Blog" title="Notes from the engineering desk." />
-  <section class="container-x max-w-3xl pb-8">
-    <ul class="space-y-5">
+<Base title="Blog: Software, SEO & Growth Insights" description="Practical articles on software development, SEO, cloud and customer communication from the Skandava team.">
+  <PageHero title="Notes from the engineering desk." crumbs={[{ label: 'Blog' }]} />
+  <section class="container-x max-w-3xl pb-16">
+    <ul class="divide-y divide-line border-y border-line">
       {posts.map((p) => (
         <li>
-          <a href={`/blog/${p.id}/`} class="card block">
-            <time datetime={p.data.pubDate.toISOString()} class="text-xs text-muted">{p.data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
-            <h2 class="mt-2 text-2xl font-semibold">{p.data.title}</h2>
-            <p class="mt-2 text-muted">{p.data.description}</p>
+          <a href={`/blog/${p.id}/`} class="group block py-8">
+            <time datetime={p.data.pubDate.toISOString()} class="text-sm text-muted">{p.data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
+            <h2 class="mt-2 text-[2rem] group-hover:text-link">{p.data.title}</h2>
+            <p class="mt-2 text-[1.1rem] leading-snug text-muted">{p.data.description}</p>
           </a>
         </li>
       ))}

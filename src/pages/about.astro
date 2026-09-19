@@ -3,31 +3,35 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 
 const pillars = [
-  { t: 'Software engineering', d: 'Full-stack development, cloud architecture on AWS, API integrations and scalable system design.' },
-  { t: 'Digital marketing', d: 'SEO, paid campaigns, social media and analytics that drive measurable growth.' },
-  { t: 'Growth solutions', d: 'Custom software paired with marketing — from WhatsApp messaging platforms to Android apps with CRM integration.' },
+  { dark: true, t: 'Software engineering', d: 'Full-stack development, cloud architecture on AWS, API integrations and scalable system design.' },
+  { dark: false, t: 'Digital marketing', d: 'SEO, paid campaigns, social media and analytics that drive measurable growth.' },
+  { dark: false, t: 'Growth solutions', d: 'Custom software paired with marketing, from WhatsApp messaging platforms to Android apps with CRM integration.' },
 ];
 ---
 
 <Base
-  title="About Skandava — Engineers Who Also Do Marketing"
+  title="About Skandava: Engineers Who Also Do Marketing"
   description="Skandava is a team of engineers and digital strategists combining software development and digital marketing to drive measurable business growth."
   jsonLd={[{ '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About Skandava', url: 'https://skandava.com/about/' }]}
 >
-  <PageHero eyebrow="About us" title="Engineering excellence, marketing that works." lead="Skandava is powered by seasoned engineers and digital strategists. We combine technical depth with strategic marketing to drive measurable business growth." />
-  <section class="container-x max-w-3xl pb-16">
-    <div class="prose-site">
-      <p>Our engineers have years of hands-on experience building scalable software — from enterprise applications to cloud-native architectures on AWS. We do not just write code; we architect systems that solve real business problems and scale with your growth.</p>
+  <PageHero title="Engineering excellence, marketing that works." lead="Skandava is powered by seasoned engineers and digital strategists. We combine technical depth with strategic marketing to drive measurable business growth." crumbs={[{ label: 'About' }]} />
+  <section class="container-x max-w-3xl pb-20">
+    <div class="prose-site text-[1.25rem]">
+      <p>Our engineers have years of hands-on experience building scalable software, from enterprise applications to cloud-native architectures on AWS. We do not just write code. We design systems that solve real business problems and scale with your growth.</p>
       <p>On the marketing side, we use SEO, paid advertising and data analytics to make sure great technology actually reaches its audience.</p>
-      <p>Whether it is a high-performance web application, a WhatsApp messaging platform for customer engagement, or a data-driven marketing campaign, our commitment is simple: combine engineering with marketing to take your business further. We aim to be your growth partner, not just a vendor.</p>
+      <p>Whether it is a high-performance web application, a WhatsApp messaging platform or a data-driven campaign, our commitment is simple: combine engineering with marketing to take your business further. We aim to be your growth partner, not just a vendor.</p>
     </div>
   </section>
-  <section class="container-x pb-16">
-    <div class="grid gap-5 md:grid-cols-3">
-      {pillars.map((p) => <div class="card" data-reveal><h2 class="text-xl font-semibold">{p.t}</h2><p class="mt-2 text-muted">{p.d}</p></div>)}
-    </div>
+  <section class="mx-auto max-w-[1200px] px-3 pb-3">
+    <ul class="grid gap-3 md:grid-cols-3">
+      {pillars.map((p) => (
+        <li class:list={['tile flex min-h-[20rem] flex-col items-center justify-center px-8 py-12', p.dark ? 'tile-dark' : 'tile-light']}>
+          <h2 class="h3">{p.t}</h2><p class="sub mt-4 text-[1.15rem] leading-snug">{p.d}</p>
+        </li>
+      ))}
+    </ul>
   </section>
-  <section class="container-x text-center">
+  <section class="container-x py-28 text-center">
     <a href="/contact/" class="btn btn-primary">Work with us</a>
   </section>
 </Base>

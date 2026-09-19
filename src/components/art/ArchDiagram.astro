@@ -1,0 +1,20 @@
+<svg class="arch" viewBox="0 0 540 250" role="img" aria-label="Diagram: users reach an app, which reads a database, stores files and raises alerts" xmlns="http://www.w3.org/2000/svg">
+  <g class="edges" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+    <path d="M118 125H200" /><path d="M300 110C335 110 340 50 380 50" /><path d="M300 125H380" /><path d="M300 140C335 140 340 200 380 200" />
+  </g>
+  <g font-size="15" font-weight="600" fill="currentColor" text-anchor="middle" style="font-family:inherit">
+    <rect class="n" x="18" y="97" width="100" height="56" rx="16" /><text x="68" y="130">Users</text>
+    <rect x="200" y="85" width="100" height="80" rx="20" fill="#0071e3" /><text x="250" y="131" fill="#fff">App</text>
+    <rect class="n" x="380" y="22" width="130" height="56" rx="16" /><text x="445" y="56">Database</text>
+    <rect class="n" x="380" y="97" width="130" height="56" rx="16" /><text x="445" y="131">File storage</text>
+    <rect class="n" x="380" y="172" width="130" height="56" rx="16" /><text x="445" y="206">Alerts</text>
+  </g>
+</svg>
+
+<style>
+  .arch { display: block; width: min(100%, 34rem); margin-inline: auto; }
+  .n { fill: var(--node-fill, #fff); stroke: var(--node-stroke, #d2d2d7); stroke-width: 1.5; }
+  .edges { opacity: .45; }
+  .edges path { stroke-dasharray: 2 8; animation: flow 1.4s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -20; } }
+</style>

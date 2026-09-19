@@ -3,7 +3,7 @@ title: Cloud & AWS Solutions
 seoTitle: AWS Cloud Architecture & DevOps Services
 description: Secure, cost-aware AWS architecture, migrations and DevOps. S3, Lambda, CI/CD and monitoring designed by engineers who ship production systems.
 summary: Secure, scalable AWS architecture, migrations and DevOps for production workloads.
-order: 2
+order: 5
 features:
   - title: Architecture on AWS
     text: Designs built around S3, Lambda, managed databases and queues, sized for real traffic and real budgets.

@@ -3,7 +3,7 @@ title: SEO & Digital Marketing
 seoTitle: SEO & Digital Marketing Services — Technical SEO, Content, Paid Media
 description: Engineering-led SEO and digital marketing. Technical SEO, content strategy, paid media and analytics that turn search traffic into revenue.
 summary: Technical SEO, content, paid media and analytics that turn traffic into revenue.
-order: 3
+order: 2
 features:
   - title: Technical SEO
     text: Crawlability, rendering, Core Web Vitals, structured data and clean site architecture.

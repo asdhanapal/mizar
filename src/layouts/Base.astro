@@ -28,7 +28,7 @@ const graph = [
     '@id': `${site.url}/#organization`,
     name: site.name,
     url: site.url,
-    logo: `${site.url}/favicon.svg`,
+    logo: `${site.url}/logo.png`,
     description: site.description,
     email: site.email,
   },
@@ -54,8 +54,9 @@ const graph = [
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <meta name="theme-color" content="#05060a" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
     <meta property="og:site_name" content={site.name} />
@@ -76,7 +77,7 @@ const graph = [
     <slot name="head" />
   </head>
   <body>
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-black">Skip to content</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-20 focus:z-[100] focus:rounded-full focus:bg-blue focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
     <Header />
     <main id="main">
       <slot />

@@ -1,0 +1,31 @@
+---
+const bars = Array.from({ length: 30 }, (_, i) => ({ d: (i * 97) % 1100, t: 0.9 + ((i * 31) % 50) / 100 }));
+---
+
+<div class="phone" role="img" aria-label="Illustration: a phone call being recorded, uploaded to storage and logged in a CRM">
+  <div class="island"></div>
+  <div class="screen">
+    <p class="rec"><span class="dot"></span>Recording</p>
+    <p class="who">Ravi Kumar</p>
+    <p class="meta">Lead 4821, 02:14</p>
+    <div class="wave">{bars.map((b) => <i style={`animation-delay:-${b.d}ms;animation-duration:${b.t}s`}></i>)}</div>
+    <p class="row" data-reveal style="transition-delay:.3s"><b class="ck">✓</b>Uploaded to your S3 bucket</p>
+    <p class="row" data-reveal style="transition-delay:.7s"><b class="ck">✓</b>Logged in your CRM</p>
+  </div>
+</div>
+
+<style>
+  .phone { position: relative; width: 17rem; aspect-ratio: 9 / 18.5; margin-inline: auto; border: 8px solid #2b2b2e; border-radius: 3rem; background: #000; box-shadow: 0 0 0 1.5px #56565a, 0 40px 80px -30px rgb(0 0 0 / .55); color: #f5f5f7; }
+  .island { position: absolute; top: 10px; left: 50%; translate: -50% 0; width: 5rem; height: 1.4rem; border-radius: 99px; background: #000; box-shadow: 0 0 0 1px #1c1c1e; z-index: 2; }
+  .screen { display: flex; flex-direction: column; height: 100%; padding: 3.6rem 1.15rem 1.3rem; }
+  .rec { display: inline-flex; align-items: center; gap: .45rem; align-self: flex-start; font-size: .75rem; font-weight: 600; color: #ff453a; background: rgb(255 69 58 / .16); border-radius: 99px; padding: .25rem .7rem; }
+  .dot { width: .45rem; height: .45rem; border-radius: 50%; background: #ff453a; animation: blink 1.4s ease-in-out infinite; }
+  .who { margin-top: 1.4rem; font-size: 1.85rem; font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+  .meta { margin-top: .4rem; font-size: .85rem; color: #98989d; }
+  .wave { display: flex; align-items: center; justify-content: space-between; height: 5.2rem; margin: 1.6rem 0 1.5rem; }
+  .wave i { display: block; width: 3px; height: 100%; border-radius: 3px; background: #30d158; transform: scaleY(.18); animation: bar 1s ease-in-out infinite; }
+  .row { display: flex; align-items: center; gap: .6rem; margin-top: .55rem; padding: .7rem .8rem; border-radius: .9rem; background: #1c1c1e; font-size: .8rem; font-weight: 500; }
+  .ck { display: grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: #0a84ff; color: #fff; font-size: .65rem; }
+  @keyframes bar { 0%, 100% { transform: scaleY(.15); } 50% { transform: scaleY(1); } }
+  @keyframes blink { 50% { opacity: .3; } }
+</style>

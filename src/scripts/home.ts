@@ -1,4 +1,5 @@
-import type { SceneHandle } from './scene';
+import type { Showcase } from './showcase';
+import { phases, type Section } from './timeline';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
@@ -17,49 +18,69 @@ async function boot() {
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 
+  // Statement: words light up from grey to black as you scroll
+  const words = document.querySelectorAll('#statement .word');
+  if (words.length) {
+    gsap.fromTo(
+      words,
+      { color: '#c7c7cc' },
+      { color: '#1d1d1f', ease: 'none', stagger: 0.12, scrollTrigger: { trigger: '#statement', start: 'top 74%', end: 'bottom 58%', scrub: true } },
+    );
+  }
+
   const zone = document.getElementById('scene-zone');
   const canvas = document.getElementById('scene') as HTMLCanvasElement | null;
-  const story = document.getElementById('story');
-  const chapters = story ? [...story.querySelectorAll<HTMLElement>('[data-chapter]')] : [];
-  let scene: SceneHandle | null = null;
-  let progress = 0;
+  const blocks = [...document.querySelectorAll<HTMLElement>('[data-svc]')];
+  if (lowPower || !zone || !canvas || !blocks.length) return;
 
-  if (story && chapters.length) {
+  const start = async () => {
+    const { mountShowcase } = await import('./showcase');
+    const showcase: Showcase | null = mountShowcase(canvas);
+    if (!showcase) return;
+    if (import.meta.env.DEV) (window as unknown as { __showcase: Showcase }).__showcase = showcase;
+
+    // Switch to the pinned scroll layout only once WebGL is really running
     document.documentElement.classList.add('story-on');
-    chapters[0].classList.add('is-active');
-    let active = 0;
-    ScrollTrigger.create({
-      trigger: story,
-      start: 'top top',
-      end: 'bottom bottom',
-      onUpdate: (self) => {
-        progress = self.progress;
-        const next = Math.min(chapters.length - 1, Math.floor(self.progress * chapters.length));
-        if (next !== active) {
-          chapters[active].classList.remove('is-active');
-          chapters[next].classList.add('is-active');
-          active = next;
-        }
-        scene?.setProgress(progress);
-      },
-    });
-    ScrollTrigger.refresh();
-  }
 
-  if (!lowPower && canvas && zone) {
-    const start = async () => {
-      const { mountScene } = await import('./scene');
-      scene = mountScene(canvas);
-      if (!scene) return;
-      scene.setProgress(progress);
-      canvas.style.opacity = '1';
-      new IntersectionObserver(([entry]) => {
-        scene?.setRunning(entry.isIntersecting && !document.hidden);
-        canvas.style.opacity = entry.isIntersecting ? '1' : '0';
-      }).observe(zone);
+    const core = blocks.find((b) => b.dataset.svc === 'core');
+    const chapters = core ? [...core.querySelectorAll<HTMLElement>('[data-chapter]')] : [];
+    let activeChapter = -1;
+    let sections: Section[] = [];
+
+    const measure = () => {
+      sections = blocks.map((b) => ({ start: b.getBoundingClientRect().top + scrollY, len: b.offsetHeight }));
+      update();
     };
-    'requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 400);
-  }
+    const update = () => {
+      const sy = scrollY, vh = innerHeight;
+      blocks.forEach((b, i) => {
+        if (!sections[i]) return;
+        const ph = phases(sy, vh, sections[i], i === 0);
+        b.style.setProperty('--o', ph.text.toFixed(3));
+        if (b === core && chapters.length) {
+          const idx = Math.min(chapters.length - 1, Math.floor(ph.a * chapters.length));
+          if (idx !== activeChapter) {
+            chapters.forEach((c, k) => c.classList.toggle('is-active', k === idx));
+            activeChapter = idx;
+          }
+        }
+      });
+      showcase.setScroll(sy, vh, sections);
+    };
+
+    measure();
+    ScrollTrigger.refresh();
+    addEventListener('scroll', update, { passive: true });
+    addEventListener('resize', measure, { passive: true });
+    lenis.on('scroll', update);
+
+    canvas.style.opacity = '1';
+    new IntersectionObserver(([entry]) => {
+      showcase.setRunning(entry.isIntersecting);
+      canvas.style.opacity = entry.isIntersecting ? '1' : '0';
+    }).observe(zone);
+  };
+  'requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1200 }) : setTimeout(start, 300);
 }
 
 if (!reduce) boot();
