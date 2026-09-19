@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/space-grotesk';
+
+@theme {
+  --color-bg: #05060a;
+  --color-surface: #0d0f16;
+  --color-line: #1c1f2b;
+  --color-fg: #f5f5f7;
+  --color-muted: #a1a1b0;
+  --color-accent: #6366f1;
+  --color-accent-2: #22d3ee;
+  --color-accent-3: #34d399;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Space Grotesk Variable', 'Inter Variable', ui-sans-serif, sans-serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  html.lenis, html.lenis body { height: auto; }
+  html.lenis { scroll-behavior: auto; }
+  body { min-height: 100vh; overflow-x: clip; }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.05; }
+  :focus-visible { outline: 2px solid var(--color-accent-2); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--color-accent); color: white; }
+}
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-6xl px-5 sm:px-8; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.2em] text-accent-2; }
+  .h1 { @apply text-5xl font-semibold sm:text-6xl lg:text-7xl; }
+  .h2 { @apply text-3xl font-semibold sm:text-5xl; }
+  .lead { @apply text-lg text-muted sm:text-xl; }
+  .gradient-text {
+    background: linear-gradient(100deg, #a5b4fc 0%, #22d3ee 55%, #34d399 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition;
+  }
+  .btn-primary { @apply bg-white text-black hover:bg-white/85; }
+  .btn-ghost { @apply border border-white/20 text-white hover:border-white/50 hover:bg-white/5; }
+  .card {
+    @apply rounded-2xl border border-line bg-surface/70 p-6 backdrop-blur transition hover:border-white/25;
+  }
+  .prose-site { @apply max-w-none text-muted; }
+  .prose-site h2 { @apply mt-12 mb-4 text-2xl font-semibold text-fg sm:text-3xl; }
+  .prose-site h3 { @apply mt-8 mb-3 text-xl font-semibold text-fg; }
+  .prose-site p { @apply my-4 leading-relaxed; }
+  .prose-site ul { @apply my-4 list-disc space-y-2 pl-6; }
+  .prose-site a { @apply text-accent-2 underline underline-offset-4; }
+  .prose-site strong { @apply text-fg; }
+}
+
+/* Progressive enhancement: scroll reveal only when JS + motion allowed */
+html.motion [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
+html.motion [data-reveal].is-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

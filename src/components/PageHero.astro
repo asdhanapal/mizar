@@ -1,0 +1,13 @@
+---
+interface Props { eyebrow?: string; title: string; lead?: string }
+const { eyebrow, title, lead } = Astro.props;
+---
+
+<section class="relative overflow-hidden pt-36 pb-16">
+  <div class="absolute inset-0 -z-10" style="background:radial-gradient(60% 60% at 15% 0%, rgb(99 102 241 / .22), transparent 70%)" aria-hidden="true"></div>
+  <div class="container-x">
+    {eyebrow && <p class="eyebrow mb-5">{eyebrow}</p>}
+    <h1 class="h1 max-w-4xl">{title}</h1>
+    {lead && <p class="lead mt-6 max-w-2xl">{lead}</p>}
+  </div>
+</section>

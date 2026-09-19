@@ -1,0 +1,31 @@
+---
+import { site } from '../site';
+const path = Astro.url.pathname;
+---
+
+<header class="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-bg/70 backdrop-blur-xl">
+  <div class="container-x flex h-16 items-center justify-between">
+    <a href="/" class="font-display text-xl font-semibold tracking-tight" aria-label={`${site.name} home`}>
+      {site.name}<span class="text-accent-2">.</span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-8 md:flex">
+      {site.nav.map((item) => (
+        <a href={item.href} class:list={['text-sm transition hover:text-white', path.startsWith(item.href) ? 'text-white' : 'text-muted']}>
+          {item.label}
+        </a>
+      ))}
+      <a href="/contact/" class="btn btn-primary !py-2">Contact us</a>
+    </nav>
+
+    <details class="group relative md:hidden">
+      <summary class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-white/15" aria-label="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </summary>
+      <nav aria-label="Mobile" class="absolute right-0 top-12 w-56 rounded-2xl border border-line bg-surface p-3 shadow-2xl">
+        {site.nav.map((item) => <a href={item.href} class="block rounded-lg px-3 py-2 text-sm text-muted hover:bg-white/5 hover:text-white">{item.label}</a>)}
+        <a href="/contact/" class="btn btn-primary mt-2 w-full">Contact us</a>
+      </nav>
+    </details>
+  </div>
+</header>

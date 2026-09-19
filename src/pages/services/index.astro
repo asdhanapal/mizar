@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base
+  title="Services — Software, Cloud, SEO & WhatsApp Messaging"
+  description="Custom software development, AWS cloud solutions, SEO and digital marketing, and WhatsApp Business messaging from one engineering-led team."
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: `https://skandava.com/services/${s.id}/`, name: s.data.title })),
+  }]}
+>
+  <PageHero eyebrow="Services" title="Engineering and marketing under one roof." lead="Pick one service or combine them. Each is delivered by the engineers who will still be around after launch." />
+  <section class="container-x pb-8">
+    <div class="grid gap-5 sm:grid-cols-2">
+      {services.map((s) => (
+        <a href={`/services/${s.id}/`} class="card group">
+          <h2 class="text-2xl font-semibold">{s.data.title}</h2>
+          <p class="mt-3 text-muted">{s.data.summary}</p>
+          <span class="mt-6 inline-block text-sm font-semibold text-accent-2">Learn more →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

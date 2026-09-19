@@ -1,0 +1,40 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const url = `https://skandava.com/blog/${entry.id}/`;
+---
+
+<Base
+  title={data.title}
+  description={data.description}
+  type="article"
+  publishedTime={data.pubDate}
+  modifiedTime={data.updatedDate ?? data.pubDate}
+  jsonLd={[{
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: data.title,
+    description: data.description,
+    datePublished: data.pubDate.toISOString(),
+    dateModified: (data.updatedDate ?? data.pubDate).toISOString(),
+    mainEntityOfPage: url,
+    author: { '@id': 'https://skandava.com/#organization' },
+    publisher: { '@id': 'https://skandava.com/#organization' },
+  }]}
+>
+  <PageHero eyebrow={data.tags[0] ?? 'Blog'} title={data.title} lead={data.description} />
+  <article class="container-x max-w-3xl pb-8">
+    <time datetime={data.pubDate.toISOString()} class="text-sm text-muted">{data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
+    <div class="prose-site mt-6"><Content /></div>
+  </article>
+</Base>

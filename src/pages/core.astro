@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+
+const problems = [
+  { t: 'VoIP flagged as spam', d: 'Networks flag outbound VoIP calls, so customers reject them or never receive them.' },
+  { t: 'Agents use personal phones', d: 'Agents switch to their own SIM cards to actually reach customers, outside your system.' },
+  { t: 'Zero CRM visibility', d: 'No call logs, recordings or duration data. Management cannot see what is happening.' },
+  { t: 'Sales leakage', d: 'Without recordings you cannot coach agents, review lost deals or understand falling conversions.' },
+];
+const steps = [
+  { t: 'Agent makes a call', d: 'The agent dials from their phone as normal. CORE detects the call state automatically through Android telephony APIs.' },
+  { t: 'CORE auto-records', d: 'When the call connects, CORE records it and stores it locally with timestamp, number, duration and agent ID.' },
+  { t: 'Uploads to secure S3', d: 'The recording uploads to your AWS S3 bucket using a presigned URL, queued and retried automatically if the phone is offline.' },
+  { t: 'Syncs to your CRM', d: 'Number, agent, lead ID, times, duration and recording URL are pushed to your CRM via API — Salesforce, Zoho, HubSpot or custom.' },
+  { t: 'Managers get visibility', d: 'Every call appears in the CRM with a playable recording. Filter by agent, date, duration or lead, and coach with real calls.' },
+];
+const faq = [
+  { q: 'What is CORE?', a: 'CORE is an Android app that automatically detects, records and syncs offline mobile calls to your CRM so your call center has full visibility.' },
+  { q: 'Do agents need to do anything?', a: 'No. CORE runs in the background and handles detection, recording, upload and CRM sync without agent action.' },
+  { q: 'Where are recordings stored?', a: 'In your own AWS S3 bucket, uploaded through presigned URLs.' },
+  { q: 'Which CRMs does it work with?', a: 'Salesforce, Zoho, HubSpot or any CRM with an API.' },
+  { q: 'Is call recording legal?', a: 'Recording laws vary by country and state. You are responsible for obtaining the consent required where you operate, and we can discuss configuration with your compliance team.' },
+];
+---
+
+<Base
+  title="CORE Caller App — Auto-Record Offline Calls & Sync to CRM"
+  description="CORE is an Android app that auto-detects, records and syncs every offline mobile call to your CRM. Give your call center full visibility and sales accountability."
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'CORE Caller App',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Android',
+      description: 'Android app that automatically records offline mobile calls and syncs them to your CRM.',
+      publisher: { '@id': 'https://skandava.com/#organization' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+    },
+  ]}
+>
+  <PageHero
+    eyebrow="CORE — Caller App"
+    title="Every offline call. Recorded. Synced. Visible."
+    lead="Your agents switched to personal phones because VoIP gets blocked as spam. Now your CRM is blind. CORE fixes that, silently and automatically."
+  />
+  <div class="container-x -mt-6 mb-20 flex flex-wrap gap-4">
+    <a href="/contact/" class="btn btn-primary">Book a demo</a>
+    <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+  </div>
+
+  <section class="container-x pb-24" aria-labelledby="problem-h">
+    <p class="eyebrow mb-4">The problem</p>
+    <h2 id="problem-h" class="h2 max-w-2xl">Your call center is flying blind.</h2>
+    <div class="mt-12 grid gap-5 sm:grid-cols-2">
+      {problems.map((p) => <div class="card" data-reveal><h3 class="text-xl font-semibold">{p.t}</h3><p class="mt-2 text-muted">{p.d}</p></div>)}
+    </div>
+  </section>
+
+  <section id="how-it-works" class="container-x pb-24" aria-labelledby="how-h">
+    <p class="eyebrow mb-4">The solution</p>
+    <h2 id="how-h" class="h2 max-w-2xl">CORE runs silently in the background.</h2>
+    <ol class="mt-12 space-y-5">
+      {steps.map((s, i) => (
+        <li class="card flex gap-6" data-reveal>
+          <span class="font-display text-4xl font-semibold text-accent-2">{String(i + 1).padStart(2, '0')}</span>
+          <div><h3 class="text-xl font-semibold">{s.t}</h3><p class="mt-2 text-muted">{s.d}</p></div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="container-x max-w-3xl pb-24" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h2 mb-8">Frequently asked questions</h2>
+    <div class="divide-y divide-line border-y border-line">
+      {faq.map((f) => (
+        <details class="group py-5">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">{f.q}<span class="text-accent-2 transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+          <p class="mt-3 text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <section class="container-x text-center">
+    <h2 class="h2 mx-auto max-w-2xl">See CORE on your team's calls.</h2>
+    <a href="/contact/" class="btn btn-primary mt-8">Book a demo</a>
+  </section>
+</Base>

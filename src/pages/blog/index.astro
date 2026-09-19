@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Base title="Blog — Software, SEO & Growth Insights" description="Practical articles on software development, SEO, cloud and customer communication from the Skandava team.">
+  <PageHero eyebrow="Blog" title="Notes from the engineering desk." />
+  <section class="container-x max-w-3xl pb-8">
+    <ul class="space-y-5">
+      {posts.map((p) => (
+        <li>
+          <a href={`/blog/${p.id}/`} class="card block">
+            <time datetime={p.data.pubDate.toISOString()} class="text-xs text-muted">{p.data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
+            <h2 class="mt-2 text-2xl font-semibold">{p.data.title}</h2>
+            <p class="mt-2 text-muted">{p.data.description}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
