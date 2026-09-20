@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const faq = [
+  { q: 'What is a UTM link?', a: 'A normal web address with a few extra labels added at the end (utm_source, utm_medium, utm_campaign). When someone clicks it, your analytics can tell exactly which post, email or advert sent them.' },
+  { q: 'Which fields are required?', a: 'Source (where the click comes from, for example instagram or newsletter), medium (the kind of channel, for example social, email or cpc) and campaign (the name of your promotion). Term and content are optional extras.' },
+  { q: 'Does this tool store my links?', a: 'No. The link is built in your browser and nothing is sent to us.' },
+  { q: 'Should I use capital letters?', a: 'Use lowercase and hyphens instead of spaces. Analytics treats Facebook and facebook as two different sources, which splits your reports.' },
+  { q: 'Can I use UTM links for WhatsApp and QR codes?', a: 'Yes. Use whatsapp as the source, or qr-code as the medium, so you can see how many visitors each one brings.' },
+];
+---
+
+<Base
+  title="Free UTM Link Builder for Campaign Tracking"
+  description="Build UTM-tagged links in seconds to track which post, email, advert or WhatsApp message brings visitors. Free, private, no sign-up."
+  jsonLd={[
+    { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'UTM Link Builder', url: 'https://skandava.com/tools/utm-link-builder/', applicationCategory: 'BusinessApplication', operatingSystem: 'Any (web browser)', description: 'Free tool that adds UTM campaign tracking parameters to a web address.', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, publisher: { '@id': 'https://skandava.com/#organization' } },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  ]}
+>
+  <PageHero title="Free UTM link builder." lead="Add tracking labels to any link, so you can see which post, email or message actually brings visitors." crumbs={[{ label: 'Free tools', href: '/tools/' }, { label: 'UTM link builder' }]} />
+
+  <section class="container-x max-w-2xl pb-16">
+    <div class="tile tile-light px-6 py-8 text-left sm:px-10">
+      <form id="utm-form" class="grid gap-5" novalidate>
+        <label class="grid gap-2 text-sm font-medium">Website address<input id="u-url" placeholder="https://yourwebsite.com/offer" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" /></label>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-2 text-sm font-medium">Source (required)<input id="u-source" placeholder="instagram" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" /></label>
+          <label class="grid gap-2 text-sm font-medium">Medium (required)<input id="u-medium" placeholder="social" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" /></label>
+        </div>
+        <label class="grid gap-2 text-sm font-medium">Campaign name (required)<input id="u-campaign" placeholder="diwali-offer" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" /></label>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-2 text-sm font-medium">Term (optional)<input id="u-term" placeholder="web-design" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" /></label>
+          <label class="grid gap-2 text-sm font-medium">Content (optional)<input id="u-content" placeholder="blue-button" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" /></label>
+        </div>
+      </form>
+      <p id="u-status" role="status" aria-live="polite" class="mt-5 min-h-[1.5rem] text-sm text-muted">Fill in the address, source, medium and campaign.</p>
+      <div id="u-result" hidden class="mt-2 flex flex-wrap items-center gap-3">
+        <input id="u-out" readonly class="min-w-0 flex-1 rounded-xl border border-line bg-white px-4 py-3 text-[0.9rem]" aria-label="Your tracked link" />
+        <button type="button" id="u-copy" class="btn btn-primary !px-5 !py-3">Copy link</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x max-w-2xl pb-16">
+    <div class="prose-site text-[1.1rem]">
+      <h2>Why tracked links matter</h2>
+      <p>If you post on Instagram, send a newsletter and share a WhatsApp offer, your analytics normally lumps the visits together. Tracked links tell you which one worked, so you can spend your time on what brings customers.</p>
+      <h2>Simple naming that works</h2>
+      <ul>
+        <li><strong>Source:</strong> instagram, whatsapp, newsletter, google</li>
+        <li><strong>Medium:</strong> social, email, cpc, qr-code</li>
+        <li><strong>Campaign:</strong> a short name for the promotion, in lowercase with hyphens</li>
+      </ul>
+      <p>Want help setting up analytics and turning the results into more enquiries? See our <a href="/services/seo-digital-marketing/">digital marketing service</a>.</p>
+    </div>
+  </section>
+
+  <section class="container-x max-w-3xl pb-20" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h2 mb-10">Questions we hear a lot.</h2>
+    <div class="divide-y divide-line border-y border-line">
+      {faq.map((f) => (
+        <details class="group py-6">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-[1.3rem] font-semibold tracking-tight">{f.q}<span class="text-2xl font-light text-muted transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+          <p class="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    import { track } from '../../scripts/track';
+    const v = (id: string) => (document.getElementById(id) as HTMLInputElement);
+    const ids = ['u-url', 'u-source', 'u-medium', 'u-campaign', 'u-term', 'u-content'];
+    const status = document.getElementById('u-status')!, result = document.getElementById('u-result')!, out = v('u-out');
+    const slug = (t: string) => t.trim().toLowerCase().replace(/\s+/g, '-');
+
+    function update() {
+      const raw = v('u-url').value.trim();
+      const source = slug(v('u-source').value), medium = slug(v('u-medium').value), campaign = slug(v('u-campaign').value);
+      if (!raw || !source || !medium || !campaign) { result.hidden = true; status.textContent = 'Fill in the address, source, medium and campaign.'; return; }
+      let url: URL;
+      try { url = new URL(/^https?:\/\//i.test(raw) ? raw : 'https://' + raw); } catch { result.hidden = true; status.textContent = 'That website address does not look right.'; return; }
+      url.searchParams.set('utm_source', source);
+      url.searchParams.set('utm_medium', medium);
+      url.searchParams.set('utm_campaign', campaign);
+      const term = slug(v('u-term').value), content = slug(v('u-content').value);
+      if (term) url.searchParams.set('utm_term', term);
+      if (content) url.searchParams.set('utm_content', content);
+      out.value = url.toString();
+      result.hidden = false;
+      status.textContent = 'Your tracked link is ready.';
+    }
+    ids.forEach((id) => v(id).addEventListener('input', update));
+    document.getElementById('utm-form')!.addEventListener('submit', (e) => e.preventDefault());
+    document.getElementById('u-copy')!.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      try { await navigator.clipboard.writeText(out.value); } catch { out.select(); document.execCommand('copy'); }
+      btn.textContent = 'Copied';
+      track('tool_copy', { tool: 'utm' });
+      setTimeout(() => { btn.textContent = 'Copy link'; }, 1600);
+    });
+  </script>
+</Base>

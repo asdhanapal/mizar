@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { getCollection } from 'astro:content';
 import { site } from '../site';
 
 interface Props {
@@ -19,7 +21,12 @@ const { title, description, image = '/og.png', type = 'website', noindex = false
 
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImage = new URL(image, site.url).href;
-const fullTitle = Astro.url.pathname === '/' ? title : `${title} | ${site.name}`;
+// Add the brand only when the title does not already say it and the result still fits in a search snippet (~60 chars).
+const fullTitle = title.toLowerCase().includes(site.name.toLowerCase()) || title.length + site.name.length + 3 > 62 ? title : `${title} | ${site.name}`;
+
+// One linked entity graph: the organisation points at every service page, and each service page
+// defines the same Service @id. Search engines and AI systems can read "who we are and what we do" in one pass.
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
 
 const graph = [
   {
@@ -31,6 +38,19 @@ const graph = [
     logo: `${site.url}/logo.png`,
     description: site.description,
     email: site.email,
+    address: { '@type': 'PostalAddress', addressLocality: site.location.locality, addressRegion: site.location.region, addressCountry: site.location.country },
+    ...(site.social.length ? { sameAs: site.social } : {}),
+    ...(site.areaServed.length ? { areaServed: site.areaServed } : {}),
+    knowsAbout: services.map((s) => s.data.title),
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: `${site.name} services`,
+      itemListElement: services.map((s) => ({
+        '@type': 'Offer',
+        itemOffered: { '@type': 'Service', '@id': `${site.url}/services/${s.id}/#service`, name: s.data.title, url: `${site.url}/services/${s.id}/` },
+      })),
+    },
+    contactPoint: [{ '@type': 'ContactPoint', contactType: 'sales', email: site.email, availableLanguage: ['English'] }],
   },
   {
     '@context': 'https://schema.org',
@@ -45,7 +65,7 @@ const graph = [
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -58,6 +78,7 @@ const graph = [
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} blog`} href="/rss.xml" />
 
     <meta property="og:site_name" content={site.name} />
     <meta property="og:locale" content={site.locale} />
@@ -66,25 +87,34 @@ const graph = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name}: ${site.tagline}`} />
     {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
     {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={`${site.name}: ${site.tagline}`} />
 
     {graph.map((entry) => <script is:inline type="application/ld+json" set:html={JSON.stringify(entry)} />)}
+    {site.analytics.ga4 && <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${site.analytics.ga4}`}></script>}
+    {site.analytics.ga4 && <script is:inline define:vars={{ id: site.analytics.ga4 }}>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', id, { anonymize_ip: true });</script>}
+    {site.analytics.plausibleDomain && <script is:inline defer data-domain={site.analytics.plausibleDomain} src="https://plausible.io/js/script.js"></script>}
     <slot name="head" />
   </head>
   <body>
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-20 focus:z-[100] focus:rounded-full focus:bg-blue focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-20 focus:z-[100] focus:rounded-full focus:bg-brand focus:px-4 focus:py-2 focus:text-white">Skip to content</a>
     <Header />
     <main id="main">
       <slot />
     </main>
     <Footer />
+    <WhatsAppButton />
     <script>
       import '../scripts/reveal';
+      import '../scripts/track';
     </script>
   </body>
 </html>

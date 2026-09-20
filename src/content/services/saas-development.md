@@ -1,8 +1,9 @@
 ---
 title: SaaS Development
-seoTitle: "SaaS Development Company: Build, Launch & Scale Software Products"
-description: "We design and engineer SaaS products end to end, including dashboards, subscription billing, multi-tenant architecture, APIs and AWS infrastructure. From first version to paying customers."
+seoTitle: "SaaS Development: Build, Launch and Scale Products"
+description: "We design and build SaaS products end to end in Chennai, from dashboards and subscription billing to multi-tenant architecture, APIs and AWS."
 summary: "Dashboards, billing, permissions and infrastructure, built as one product that is ready to scale."
+answer: "SaaS development is building software that customers use online for a subscription. Skandava designs and builds the product end to end: dashboards, accounts and permissions, subscription billing, APIs and the AWS infrastructure behind it, starting with the smallest version that proves your idea."
 order: 1
 features:
   - title: Product and MVP
@@ -36,3 +37,5 @@ A SaaS product is more than screens. It is accounts, permissions, billing, repor
 2. **Build.** Short iterations with working software you can use every week.
 3. **Launch.** Deployment, monitoring and hand-over documentation.
 4. **Grow.** Continuous improvement, paired with our marketing team when you need customers as well as code.
+
+Not sure whether to build your own software or keep paying for a subscription? Try the free [build vs buy calculator](/tools/build-vs-buy-calculator/) with your own numbers.

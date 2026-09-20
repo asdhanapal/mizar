@@ -1,6 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
 
 const pillars = [
   { dark: true, t: 'Software engineering', d: 'Full-stack development, cloud architecture on AWS, API integrations and scalable system design.' },
@@ -17,9 +20,11 @@ const pillars = [
   <PageHero title="Engineering excellence, marketing that works." lead="Skandava is powered by seasoned engineers and digital strategists. We combine technical depth with strategic marketing to drive measurable business growth." crumbs={[{ label: 'About' }]} />
   <section class="container-x max-w-3xl pb-20">
     <div class="prose-site text-[1.25rem]">
+      <p>We are based in Ashok Nagar, Chennai.</p>
       <p>Our engineers have years of hands-on experience building scalable software, from enterprise applications to cloud-native architectures on AWS. We do not just write code. We design systems that solve real business problems and scale with your growth.</p>
-      <p>On the marketing side, we use SEO, paid advertising and data analytics to make sure great technology actually reaches its audience.</p>
-      <p>Whether it is a high-performance web application, a WhatsApp messaging platform or a data-driven campaign, our commitment is simple: combine engineering with marketing to take your business further. We aim to be your growth partner, not just a vendor.</p>
+      <p>On the marketing side, we use <a href="/services/seo-digital-marketing/">SEO</a>, paid advertising and data analytics to make sure great technology actually reaches its audience.</p>
+      <p>Whether it is a high-performance web application, a <a href="/services/whatsapp-messaging/">WhatsApp messaging platform</a> or a data-driven campaign, our commitment is simple: combine engineering with marketing to take your business further. We aim to be your growth partner, not just a vendor.</p>
+      <p>We also build our own products. <a href="/core/">CORE</a> records offline mobile calls and syncs them to your CRM. Alongside it we take on <a href="/services/crm-integration-development/">CRM integration</a> and <a href="/services/android-app-development/">Android app</a> projects for clients. If you run an agency or consultancy, see how <a href="/partners/">partners work with us</a>.</p>
     </div>
   </section>
   <section class="mx-auto max-w-[1200px] px-3 pb-3">
@@ -31,7 +36,18 @@ const pillars = [
       ))}
     </ul>
   </section>
-  <section class="container-x py-28 text-center">
+  <section class="container-x max-w-3xl py-20" aria-labelledby="build-h">
+    <h2 id="build-h" class="h2 mb-10">What we build.</h2>
+    <ul class="divide-y divide-line border-y border-line">
+      {services.map((s) => (
+        <li class="py-5">
+          <a href={`/services/${s.id}/`} class="link text-[1.3rem] font-semibold tracking-tight">{s.data.title}</a>
+          <p class="mt-1 text-[1.05rem] leading-snug text-muted">{s.data.summary}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="container-x py-16 text-center">
     <a href="/contact/" class="btn btn-primary">Work with us</a>
   </section>
 </Base>

@@ -3,6 +3,9 @@ title: Why your agents' offline calls are invisible to your CRM
 description: VoIP calls get flagged as spam, agents switch to personal phones, and your CRM loses sight of the conversation. Here is why it happens and how to fix it.
 pubDate: 2026-09-20
 tags: [call center, CRM, CORE]
+related:
+  href: /core/
+  label: See how CORE records and syncs offline calls
 ---
 
 Many sales teams notice the same pattern: answer rates on VoIP dialers drop, so agents quietly switch to their personal mobile phones. The customer picks up and the deal moves forward — but the call never appears in the CRM.

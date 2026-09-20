@@ -1,0 +1,144 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const faq = [
+  { q: 'Is custom software cheaper than a subscription?', a: 'It depends on how many people use it and for how long. A subscription costs little at the start and grows with every user and every year. Custom software costs more at the start and then mostly costs hosting and maintenance. This calculator shows the month where the two lines cross, if they cross at all.' },
+  { q: 'What should I enter as the running cost of custom software?', a: 'Everything you pay each month after launch: hosting, backups, monitoring, bug fixes, small changes and support. A common mistake is entering zero. Software needs looking after.' },
+  { q: 'What does this calculator leave out?', a: 'Your team\'s time, migrating existing data, training, the value of features you could not get from a ready-made product, and the risk of a build running late. Those can matter as much as the price, so treat the result as one input to the decision, not the answer.' },
+  { q: 'Should I enter prices with or without GST?', a: 'Either, as long as you use the same for every field. Mixing the two makes the comparison wrong.' },
+  { q: 'Does this tool store my numbers?', a: 'No. The sums are done in your browser and nothing is sent to us.' },
+];
+
+const field = 'w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15';
+---
+
+<Base
+  title="Custom Software vs Subscription Cost Calculator"
+  description="Compare buying a subscription with building custom software. Enter your own numbers to see the total cost over the years and the break-even month. Free and private."
+  jsonLd={[
+    { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Custom Software vs Subscription Cost Calculator', url: 'https://skandava.com/tools/build-vs-buy-calculator/', applicationCategory: 'BusinessApplication', operatingSystem: 'Any (web browser)', description: 'Free calculator that compares the total cost of a software subscription with custom-built software and finds the break-even month.', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, publisher: { '@id': 'https://skandava.com/#organization' } },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  ]}
+>
+  <PageHero title="Build or buy? Do the sums." lead="Enter what a subscription costs and what a custom build would cost. See the total over the years and the month they break even." crumbs={[{ label: 'Free tools', href: '/tools/' }, { label: 'Build vs buy calculator' }]} />
+
+  <section class="container-x max-w-2xl pb-16">
+    <div class="tile tile-light px-6 py-8 text-left sm:px-10">
+      <form id="bb-form" class="grid gap-5" novalidate>
+        <p class="text-sm text-muted">All amounts in rupees. Use your own quotes, not our guesses.</p>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-2 text-sm font-medium">Number of users<input id="b-users" inputmode="numeric" placeholder="25" class={field} /></label>
+          <label class="grid gap-2 text-sm font-medium">Subscription price per user, per month<input id="b-price" inputmode="numeric" placeholder="from the vendor's price page" class={field} /></label>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-2 text-sm font-medium">Custom build cost (one time)<input id="b-build" inputmode="numeric" placeholder="from a quote" class={field} /></label>
+          <label class="grid gap-2 text-sm font-medium">Custom running cost, per month<input id="b-run" inputmode="numeric" placeholder="hosting + maintenance" class={field} /></label>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2">
+          <label class="grid gap-2 text-sm font-medium">Years to compare
+            <select id="b-years" class={field}>
+              {[1, 2, 3, 4, 5, 7, 10].map((y) => <option value={y} selected={y === 3}>{y} {y === 1 ? 'year' : 'years'}</option>)}
+            </select>
+          </label>
+          <label class="grid gap-2 text-sm font-medium">Yearly subscription price rise (%)<input id="b-rise" inputmode="decimal" placeholder="0" class={field} /></label>
+        </div>
+      </form>
+      <p id="b-status" role="status" aria-live="polite" class="mt-5 min-h-[1.5rem] text-sm text-muted">Fill in the users, subscription price, build cost and running cost.</p>
+
+      <div id="b-result" hidden class="mt-2 grid gap-5">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="rounded-2xl bg-white p-5"><p class="text-sm text-muted">Subscription, total</p><p id="r-sub" class="mt-1 text-[1.6rem] font-semibold tracking-tight"></p></div>
+          <div class="rounded-2xl bg-white p-5"><p class="text-sm text-muted">Custom build, total</p><p id="r-custom" class="mt-1 text-[1.6rem] font-semibold tracking-tight"></p></div>
+        </div>
+        <p id="r-verdict" class="text-[1.15rem] leading-snug tracking-tight"></p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <caption class="sr-only">Cumulative cost by year</caption>
+            <thead><tr class="border-b border-line text-muted"><th scope="col" class="py-2 pr-4 font-medium">End of year</th><th scope="col" class="py-2 pr-4 font-medium">Subscription</th><th scope="col" class="py-2 font-medium">Custom build</th></tr></thead>
+            <tbody id="r-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x max-w-2xl pb-16">
+    <div class="prose-site text-[1.1rem]">
+      <h2>How to read the result</h2>
+      <p>A subscription is cheap to start and keeps costing more as your team grows. Custom software is the opposite: a large cost first, then a small monthly one. If the lines cross early, building tends to pay off. If they never cross, or cross after many years, buying is usually the safer choice.</p>
+      <h2>When buying is usually right</h2>
+      <ul>
+        <li>A ready-made product already does what you need.</li>
+        <li>Your team is small and not growing fast.</li>
+        <li>You need to be running next week, not next quarter.</li>
+      </ul>
+      <h2>When building can be right</h2>
+      <ul>
+        <li>Per-user pricing grows faster than your budget as you hire.</li>
+        <li>You keep paying for add-ons or workarounds to make a product fit how you work.</li>
+        <li>The software is part of what you sell, or holds data you need full control of.</li>
+      </ul>
+      <p>Still unsure? Our <a href="/services/saas-development/">SaaS development</a> and <a href="/services/crm-integration-development/">CRM integration</a> teams will give you an honest view of both options, including when they would tell you to buy instead.</p>
+    </div>
+  </section>
+
+  <section class="container-x max-w-3xl pb-20" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h2 mb-10">Questions we hear a lot.</h2>
+    <div class="divide-y divide-line border-y border-line">
+      {faq.map((f) => (
+        <details class="group py-6">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-[1.3rem] font-semibold tracking-tight">{f.q}<span class="text-2xl font-light text-muted transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+          <p class="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    import { track } from '../../scripts/track';
+    const el = (id: string) => document.getElementById(id) as HTMLInputElement;
+    const num = (id: string) => Number(el(id).value.replace(/[,\s₹]/g, ''));
+    const inr = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+    const ids = ['b-users', 'b-price', 'b-build', 'b-run', 'b-years', 'b-rise'];
+    const status = document.getElementById('b-status')!, result = document.getElementById('b-result')!;
+    let tracked = false;
+
+    function update() {
+      const users = num('b-users'), price = num('b-price'), build = num('b-build'), run = num('b-run');
+      const years = num('b-years') || 3, rise = (num('b-rise') || 0) / 100;
+      const ready = [users, price, build].every((n) => Number.isFinite(n) && n > 0) && Number.isFinite(run) && run >= 0 && el('b-run').value.trim() !== '';
+      if (!ready) { result.hidden = true; status.textContent = 'Fill in the users, subscription price, build cost and running cost.'; return; }
+
+      // Month by month, so a yearly price rise and the break-even month are both exact.
+      const months = years * 12;
+      let sub = 0, breakEven = 0;
+      const rows: string[] = [];
+      for (let m = 1; m <= months; m++) {
+        sub += users * price * Math.pow(1 + rise, Math.floor((m - 1) / 12));
+        const custom = build + run * m;
+        if (!breakEven && custom <= sub) breakEven = m;
+        if (m % 12 === 0) rows.push(`<tr class="border-b border-line"><th scope="row" class="py-2 pr-4 font-medium">Year ${m / 12}</th><td class="py-2 pr-4">${inr.format(sub)}</td><td class="py-2">${inr.format(custom)}</td></tr>`);
+      }
+      const custom = build + run * months;
+      document.getElementById('r-sub')!.textContent = inr.format(sub);
+      document.getElementById('r-custom')!.textContent = inr.format(custom);
+      document.getElementById('r-rows')!.innerHTML = rows.join('');
+
+      const diff = Math.abs(sub - custom);
+      const verdict = document.getElementById('r-verdict')!;
+      if (breakEven) {
+        const y = Math.floor(breakEven / 12), mo = breakEven % 12;
+        const when = [y ? `${y} year${y > 1 ? 's' : ''}` : '', mo ? `${mo} month${mo > 1 ? 's' : ''}` : ''].filter(Boolean).join(' ');
+        verdict.textContent = `Custom software costs less from month ${breakEven} (${when}). Over ${years} year${years > 1 ? 's' : ''} it saves ${inr.format(diff)}, before counting the things this sum leaves out.`;
+      } else {
+        verdict.textContent = `Within ${years} year${years > 1 ? 's' : ''} the subscription stays cheaper by ${inr.format(diff)}. Building would need a longer horizon, more users or a lower build cost to pay off.`;
+      }
+      result.hidden = false;
+      status.textContent = 'Your comparison is ready.';
+      if (!tracked) { tracked = true; track('tool_use', { tool: 'build-vs-buy' }); }
+    }
+    ids.forEach((id) => { el(id).addEventListener('input', update); el(id).addEventListener('change', update); });
+    document.getElementById('bb-form')!.addEventListener('submit', (e) => e.preventDefault());
+  </script>
+</Base>

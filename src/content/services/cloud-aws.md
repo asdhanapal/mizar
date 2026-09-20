@@ -3,6 +3,7 @@ title: Cloud & AWS Solutions
 seoTitle: AWS Cloud Architecture & DevOps Services
 description: Secure, cost-aware AWS architecture, migrations and DevOps. S3, Lambda, CI/CD and monitoring designed by engineers who ship production systems.
 summary: Secure, scalable AWS architecture, migrations and DevOps for production workloads.
+answer: "Cloud and AWS services mean designing, moving and running your software on Amazon Web Services. Skandava sets up secure, monitored, cost-aware infrastructure with automated deployments and backups."
 order: 5
 features:
   - title: Architecture on AWS

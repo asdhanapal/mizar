@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PhoneCall from '../components/art/PhoneCall.astro';
+import Abstract from '../components/Abstract.astro';
 
 const problems = [
   { t: 'VoIP gets flagged as spam', d: 'Networks flag outbound VoIP calls, so customers reject them or never receive them.' },
@@ -20,24 +21,29 @@ const faq = [
   { q: 'Do agents need to do anything?', a: 'No. CORE runs in the background and handles detection, recording, upload and CRM sync without agent action.' },
   { q: 'Where are recordings stored?', a: 'In your own AWS S3 bucket, uploaded through presigned URLs.' },
   { q: 'Which CRMs does it work with?', a: 'Salesforce, Zoho, HubSpot or any CRM with an API.' },
+  { q: 'Does CORE work with Zoho CRM?', a: 'Yes. CORE sends the call details and the recording link to Zoho CRM through its API. Tell us how you use Zoho and we will confirm how calls are matched to your leads.' },
+  { q: 'Does CORE work with HubSpot?', a: 'Yes. CORE pushes the phone number, agent, start and end time, duration and recording link to HubSpot through its API.' },
+  { q: 'Does CORE work with Salesforce?', a: 'Yes. CORE syncs call details and the recording link to Salesforce through its API. We confirm the setup with you before starting.' },
+  { q: 'Can I record calls made from agents\' personal phones?', a: 'Yes. That is what CORE is built for. It runs on the agent\'s Android phone and records calls in the background, so the team can keep using the phone numbers that customers actually answer.' },
   { q: 'Is call recording legal?', a: 'Recording laws vary by country and state. You are responsible for obtaining the consent required where you operate, and we can discuss configuration with your compliance team.' },
 ];
 ---
 
 <Base
-  title="CORE Caller App: Auto-Record Offline Calls & Sync to CRM"
+  title="CORE Call Recorder: Sync Every Call to Your CRM"
   description="CORE is an Android app that auto-detects, records and syncs every offline mobile call to your CRM. Give your call center full visibility and sales accountability."
   jsonLd={[
     { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'CORE Caller App', applicationCategory: 'BusinessApplication', operatingSystem: 'Android', description: 'Android app that automatically records offline mobile calls and syncs them to your CRM.', publisher: { '@id': 'https://skandava.com/#organization' } },
     { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
   ]}
 >
-  <section class="px-5 pt-32 text-center sm:pt-40">
+  <section class="wash wash-violet relative overflow-hidden px-5 pt-32 pb-10 text-center sm:pt-40">
+    <Abstract variant="network" class="-right-40 -top-24 h-[34rem] w-[34rem] opacity-40 max-sm:hidden" />
     <p class="text-[1.4rem] font-semibold tracking-tight">CORE</p>
     <h1 class="h1 mx-auto mt-2 max-w-4xl">Every offline call, recorded and synced.</h1>
     <p class="lead mx-auto mt-6 max-w-2xl">Your agents switched to personal phones because VoIP gets blocked as spam. Now your CRM is blind. CORE fixes that, silently and automatically.</p>
     <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-      <a href="/contact/" class="btn btn-primary">Book a demo</a>
+      <a href="/contact/?topic=demo" class="btn btn-primary">Book a demo</a>
       <a href="#how-it-works" class="link text-[1.2rem]">See how it works</a>
     </div>
   </section>
@@ -46,7 +52,14 @@ const faq = [
     <div class="tile tile-dark px-6 pt-20 pb-0 sm:pt-28"><div class="-mb-24 sm:-mb-32"><PhoneCall /></div></div>
   </section>
 
-  <section class="container-x py-28" aria-labelledby="problem-h">
+  <section class="container-x max-w-3xl pt-16" aria-label="In short">
+    <div class="rounded-3xl bg-fog px-7 py-6 sm:px-9 sm:py-7">
+      <p class="text-sm font-semibold text-muted">In short</p>
+      <p class="mt-2 text-[1.25rem] leading-snug tracking-tight">CORE is an Android app that records offline mobile calls in the background, uploads the audio to your own AWS S3 bucket and syncs the call details to your CRM, so managers can see every call agents make from their personal phones.</p>
+    </div>
+  </section>
+
+  <section class="container-x py-20" aria-labelledby="problem-h">
     <h2 id="problem-h" class="h2 max-w-3xl">Your call center is flying blind.</h2>
     <div class="mt-14 grid gap-x-14 gap-y-12 sm:grid-cols-2">
       {problems.map((p) => (
@@ -55,7 +68,7 @@ const faq = [
     </div>
   </section>
 
-  <section id="how-it-works" class="bg-fog py-28" aria-labelledby="how-h">
+  <section id="how-it-works" class="bg-fog py-20" aria-labelledby="how-h">
     <div class="container-x">
       <h2 id="how-h" class="h2 max-w-3xl">CORE runs silently in the background.</h2>
       <ol class="mt-14 divide-y divide-line border-y border-line">
@@ -69,7 +82,7 @@ const faq = [
     </div>
   </section>
 
-  <section class="container-x max-w-3xl py-28" aria-labelledby="faq-h">
+  <section class="container-x max-w-3xl py-20" aria-labelledby="faq-h">
     <h2 id="faq-h" class="h2 mb-10">Questions we hear a lot.</h2>
     <div class="divide-y divide-line border-y border-line">
       {faq.map((f) => (
@@ -81,8 +94,8 @@ const faq = [
     </div>
   </section>
 
-  <section class="container-x pb-28 text-center">
+  <section class="container-x pb-20 text-center">
     <h2 class="h2 mx-auto max-w-2xl">See CORE on your team's calls.</h2>
-    <a href="/contact/" class="btn btn-primary mt-9">Book a demo</a>
+    <a href="/contact/?topic=demo" class="btn btn-primary mt-9">Book a demo</a>
   </section>
 </Base>

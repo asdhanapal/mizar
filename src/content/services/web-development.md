@@ -1,8 +1,9 @@
 ---
 title: Web Development
-seoTitle: "Web Development Company: Fast, SEO-Ready Websites & Web Apps"
-description: "Fast, accessible, SEO-ready websites and web applications built by senior engineers. Modern frameworks, clean code and performance that helps you rank."
+seoTitle: "Web Development: Fast, SEO-Ready Websites and Apps"
+description: "Fast, accessible, SEO-ready websites and web applications from senior engineers in Chennai. Modern frameworks, clean code and performance that helps you rank."
 summary: "Fast, accessible websites and web apps, built to rank and convert."
+answer: "Web development is building websites and web apps. Skandava builds fast, accessible, search-friendly sites with modern frameworks and measures their speed with real tools, so you can see the results."
 order: 3
 features:
   - title: Marketing websites

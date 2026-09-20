@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import { site } from '../site';
 
-const field = 'w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] text-ink outline-none transition focus:border-blue focus:ring-4 focus:ring-blue/15';
+const field = 'w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/15';
 ---
 
 <Base
@@ -13,24 +13,77 @@ const field = 'w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1
 >
   <PageHero title="Let's talk about your project." lead="Tell us what you are building or where you want to grow. We will reply with an honest view of scope and next steps." crumbs={[{ label: 'Contact' }]} />
   <section class="container-x max-w-xl pb-16">
-    <!-- TODO: connect to a real backend (Cloudflare Function, Resend, Formspree). Currently composes an email. -->
-    <form id="contact-form" class="grid gap-5" novalidate>
-      <label class="grid gap-2 text-sm font-medium">Full name<input name="name" required autocomplete="name" class={field} /></label>
-      <label class="grid gap-2 text-sm font-medium">Email<input name="email" type="email" required autocomplete="email" class={field} /></label>
-      <label class="grid gap-2 text-sm font-medium">Phone (optional)<input name="phone" type="tel" autocomplete="tel" class={field} /></label>
-      <label class="grid gap-2 text-sm font-medium">How can we help?<textarea name="message" rows="5" required class={field}></textarea></label>
-      <button class="btn btn-primary mt-2 w-full" type="submit">Send message</button>
-      <p class="text-center text-sm text-muted">Or email us at <a class="text-link hover:underline" href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    <form id="contact-form" class="grid gap-5" novalidate data-email={site.email}>
+      <label class="grid gap-2 text-sm font-medium">Full name<input name="name" required minlength="2" maxlength="100" autocomplete="name" class={field} /></label>
+      <label class="grid gap-2 text-sm font-medium">Email<input name="email" type="email" required maxlength="200" autocomplete="email" class={field} /></label>
+      <label class="grid gap-2 text-sm font-medium">Phone (optional)<input name="phone" type="tel" maxlength="40" autocomplete="tel" class={field} /></label>
+      <label class="grid gap-2 text-sm font-medium">How can we help?<textarea name="message" rows="5" required minlength="10" maxlength="5000" class={field}></textarea></label>
+      <!-- Spam trap: real visitors never see or fill this -->
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+        <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+      </div>
+      <button id="contact-submit" class="btn btn-primary mt-2 w-full disabled:opacity-60" type="submit">Send message</button>
+      <p id="contact-status" role="status" aria-live="polite" class="min-h-[1.5rem] text-center text-sm"></p>
+      <p class="text-center text-xs text-muted">By sending this message you agree that we may use your details to reply to you. See our <a class="text-link hover:underline" href="/privacy/">privacy notice</a>.</p>
+      <p class="text-center text-sm text-muted">Or email us at <a class="text-link hover:underline" href={`mailto:${site.email}`}>{site.email}</a>. We are based in {site.location.neighbourhood}, {site.location.locality}.</p>
     </form>
+    <div id="contact-done" hidden class="rounded-3xl bg-fog px-8 py-14 text-center">
+      <h2 class="h3">Message sent.</h2>
+      <p class="lead mx-auto mt-4 max-w-md">Thank you. We have your message and will reply to <strong id="contact-done-email" class="text-ink"></strong> soon.</p>
+      <a href="/" class="btn btn-primary mt-8">Back to home</a>
+    </div>
   </section>
-  <script define:vars={{ to: site.email }}>
-    document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+
+  <script>
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const status = document.getElementById('contact-status')!;
+    const submit = document.getElementById('contact-submit') as HTMLButtonElement;
+    const done = document.getElementById('contact-done')!;
+    import { track } from '../scripts/track';
+    const loadedAt = Date.now();
+    const topics: Record<string, string> = {
+      demo: 'I would like to book a demo of CORE for my team.',
+      partner: 'Partnership enquiry: I would like to talk about working together.',
+      website: 'I need a website for my business.',
+      marketing: 'I would like help getting more customers online.',
+    };
+    const topic = new URLSearchParams(location.search).get('topic');
+    const box = form?.elements.namedItem('message') as HTMLTextAreaElement | null;
+    if (box && topic && topics[topic] && !box.value) box.value = topics[topic];
+    // Dev serves the endpoint with a trailing slash (the site uses trailingSlash: 'always'); hosts serve the plain path.
+    const ENDPOINT = import.meta.env.DEV ? '/api/contact/' : '/api/contact';
+
+    form?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const f = e.currentTarget;
-      if (!f.reportValidity()) return;
-      const d = new FormData(f);
-      const body = `Name: ${d.get('name')}\nEmail: ${d.get('email')}\nPhone: ${d.get('phone') || '-'}\n\n${d.get('message')}`;
-      location.href = `mailto:${to}?subject=${encodeURIComponent('Website enquiry from ' + d.get('name'))}&body=${encodeURIComponent(body)}`;
+      if (!form.reportValidity()) return;
+      const d = new FormData(form);
+      status.textContent = '';
+      status.className = 'min-h-[1.5rem] text-center text-sm text-muted';
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: d.get('name'), email: d.get('email'), phone: d.get('phone'), message: d.get('message'),
+            website: d.get('website'), t: Date.now() - loadedAt,
+          }),
+        });
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || !out.ok) throw new Error(out.error || 'send failed');
+        document.getElementById('contact-done-email')!.textContent = String(d.get('email'));
+        track('contact_form_sent', { topic: topic || 'general' });
+        form.hidden = true;
+        done.hidden = false;
+        done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) {
+        const to = form.dataset.email;
+        status.className = 'min-h-[1.5rem] text-center text-sm text-[#d70015]';
+        status.innerHTML = `${err instanceof Error && err.message !== 'send failed' ? err.message : 'We could not send your message.'} Please email us directly at <a class="underline" href="mailto:${to}">${to}</a>.`;
+        submit.disabled = false;
+        submit.textContent = 'Send message';
+      }
     });
   </script>
 </Base>

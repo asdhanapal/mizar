@@ -1,0 +1,46 @@
+# Sites to measure. One homepage per line; lines starting with # are ignored.
+# These are the agencies that appeared on page 1 of Google (India) for our target searches on 20 Sep 2026,
+# plus our own site for comparison. Add or remove freely, then run:  npm run speed-study
+
+# saas / crm / web development companies (head-term results)
+https://www.wearetenet.com/
+https://www.onedatasoftware.com/
+https://www.aalpha.net/
+https://www.nextbraintech.com/
+https://www.nethues.com/
+https://radixweb.com/
+https://arobit.com/
+https://invoidea.com/
+https://orangemantra.com/
+https://webkul.com/
+https://conceptinfoway.net/
+https://gaincafe.com/
+https://digifysoft.in/
+https://zygobit.com/
+https://eservecloud.in/
+https://innovairasoftwares.com/
+https://levitation.in/
+https://duplextech.com/
+https://wacto.in/
+
+# cost-guide and comparison-page publishers
+https://albero.in/
+https://appwizards.in/
+https://wavxsolutions.in/
+https://ab7solutions.com/
+https://mavanisolution.com/
+https://softwarecrafting.in/
+https://secuodsoft.com/
+https://zethic.com/
+https://akoode.com/
+https://cssfounder.com/
+https://aerobusinesssolutions.com/
+https://oryxus.in/
+https://bighelpers.in/
+https://vasuyashii.com/
+https://techassistant.co.in/
+https://appspine.com/
+https://darslab.tech/
+
+# ours (the deployed site, which may be older than the local build)
+https://www.skandava.com/

@@ -3,6 +3,7 @@ title: WhatsApp Business Messaging
 seoTitle: WhatsApp Bulk Messaging & Business API Integration
 description: Compliant WhatsApp bulk messaging platforms using the official WhatsApp Business Platform. Templates, opt-in management, campaigns and CRM integration.
 summary: Opt-in, template-based WhatsApp campaigns and automation, integrated with your CRM.
+answer: "WhatsApp business messaging lets you send order updates, reminders and offers to customers who agreed to hear from you. Skandava builds it on the official WhatsApp Business Platform, with opt-in handling, approved templates, campaign reports and CRM sync."
 order: 4
 features:
   - title: Campaigns at scale
@@ -30,3 +31,5 @@ WhatsApp is where many customers read messages first. We build messaging platfor
 - Template creation and approval workflow
 - Campaign scheduling, throttling and reporting
 - Two-way conversations and CRM sync
+
+Just need a simple way for customers to start a chat with you? Use our free [WhatsApp link generator](/tools/whatsapp-link-generator/).

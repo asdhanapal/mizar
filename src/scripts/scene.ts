@@ -119,7 +119,7 @@ export function drawRecording(c: CanvasRenderingContext2D) {
   rr(c, 36, 900, CW - 72, 170, 26); c.fillStyle = 'rgba(255,255,255,.09)'; c.fill();
   text(c, 'Uploading to your S3 bucket', 68, 970, 28, '#fff', 500);
   rr(c, 68, 1006, CW - 136, 10, 5); c.fillStyle = 'rgba(255,255,255,.18)'; c.fill();
-  rr(c, 68, 1006, (CW - 136) * 0.68, 10, 5); c.fillStyle = '#0a84ff'; c.fill();
+  rr(c, 68, 1006, (CW - 136) * 0.68, 10, 5); c.fillStyle = '#5dd435'; c.fill();
 }
 
 export function drawSynced(c: CanvasRenderingContext2D) {
@@ -129,7 +129,7 @@ export function drawSynced(c: CanvasRenderingContext2D) {
   c.strokeStyle = '#fff'; c.lineWidth = 6; c.lineCap = 'round'; c.lineJoin = 'round';
   c.beginPath(); c.moveTo(CW - 82, 177); c.lineTo(CW - 73, 187); c.lineTo(CW - 57, 166); c.stroke();
   rr(c, 30, 250, CW - 60, 440, 30); c.fillStyle = 'rgba(255,255,255,.09)'; c.fill();
-  const rows: [string, string, string][] = [['Lead', 'Lead 4821', '#fff'], ['Agent', 'Priya S.', '#fff'], ['Duration', '2 min 14 s', '#fff'], ['Recording', 'Play', '#0a84ff']];
+  const rows: [string, string, string][] = [['Lead', 'Lead 4821', '#fff'], ['Agent', 'Priya S.', '#fff'], ['Duration', '2 min 14 s', '#fff'], ['Recording', 'Play', '#5dd435']];
   rows.forEach(([k, v, col], i) => {
     const y = 250 + i * 110 + 66;
     text(c, k, 64, y, 27, '#98989d', 400);

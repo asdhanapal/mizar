@@ -8,9 +8,9 @@ import {
   WebGLRenderer,
 } from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
-import { buildCards, buildLaptop, buildSaas, makeCtx, type Built, type Ctx } from './stage';
+import { buildCards, buildLaptop, buildSaas, makeCtx, makeNetwork, NETS, type Built, type Ctx } from './stage';
 import { buildPhone, clamp01, drawDetected, drawRecording, drawSynced, easeOutCubic, lerp, smooth, through } from './scene';
-import { phases, type Section } from './timeline';
+import { chapterAt, phases, type Section } from './timeline';
 
 export interface Showcase {
   setScroll(sy: number, vh: number, sections: Section[]): void;
@@ -27,7 +27,7 @@ function buildCore(c: Ctx): Built {
   return {
     root: phone,
     update(a) {
-      const idx = Math.min(2, Math.floor(a * 3));
+      const idx = chapterAt(a, 3);
       if (idx !== shown) { shown = idx; screenMat.map = textures[idx]; }
       phone.rotation.y = through([-0.5, 0.42, -0.1], a);
       phone.rotation.x = through([0.05, -0.05, 0.04], a);
@@ -42,7 +42,10 @@ function buildCore(c: Ctx): Built {
 /** How far below its resting spot each object sits while centred. The first peeks in from the bottom; the rest rise to mid-screen. */
 const DROP = [2.6, 0.7, 0.7, 0.7];
 
-export function mountShowcase(canvas: HTMLCanvasElement): Showcase | null {
+const yieldToBrowser = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+/** Builds in small steps, giving the page back to the browser between them so it never freezes. */
+export async function mountShowcase(canvas: HTMLCanvasElement): Promise<Showcase | null> {
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -50,13 +53,15 @@ export function mountShowcase(canvas: HTMLCanvasElement): Showcase | null {
     return null;
   }
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer: coarse)').matches ? 1.5 : 2));
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
 
   const scene = new Scene();
+  await yieldToBrowser();
   const pmrem = new PMREMGenerator(renderer);
   const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  await yieldToBrowser();
   scene.environment = env;
   scene.environmentIntensity = 0.95;
   const key = new DirectionalLight(0xffffff, 1.1);
@@ -68,14 +73,23 @@ export function mountShowcase(canvas: HTMLCanvasElement): Showcase | null {
   camera.lookAt(0, 0, 0);
 
   const ctx = makeCtx(renderer);
-  const objects = [buildSaas, buildCards, buildLaptop, buildCore].map((build) => {
+  const objects: { built: Built; holder: Group; orbit: ReturnType<typeof makeNetwork> }[] = [];
+  for (const { build, palette } of [
+    { build: buildSaas, palette: 'saas' },
+    { build: buildCards, palette: 'cards' },
+    { build: buildLaptop, palette: 'laptop' },
+    { build: buildCore, palette: 'core' },
+  ]) {
     const built = build(ctx);
     const holder = new Group();
     holder.add(built.root);
+    const orbit = makeNetwork(ctx, NETS[palette]);
+    holder.add(orbit.group);
     holder.visible = false;
     scene.add(holder);
-    return { built, holder };
-  });
+    objects.push({ built, holder, orbit });
+    await yieldToBrowser();
+  }
 
   let sy = 0, syT = 0, vh = innerHeight;
   let sections: Section[] = [];
@@ -105,8 +119,11 @@ export function mountShowcase(canvas: HTMLCanvasElement): Showcase | null {
     render(t, intro);
   }
 
+  let lastNet = 0;
   function render(t: number, intro: number) {
-    objects.forEach(({ built, holder }, i) => {
+    const dtNet = Math.min(0.05, Math.max(0, t - lastNet));
+    lastNet = t;
+    objects.forEach(({ built, holder, orbit }, i) => {
       const sec = sections[i];
       if (!sec) { holder.visible = false; return; }
       const ph = phases(sy, vh, sec, i === 0);
@@ -139,7 +156,9 @@ export function mountShowcase(canvas: HTMLCanvasElement): Showcase | null {
       holder.rotation.y = px * 0.08;
       holder.rotation.x = py * 0.04;
       built.update(ph.a, t);
+      orbit.update(t, dtNet);
     });
+
     renderer.render(scene, camera);
   }
 
@@ -170,6 +189,7 @@ export function mountShowcase(canvas: HTMLCanvasElement): Showcase | null {
       document.removeEventListener('visibilitychange', sync);
       ctx.geos.forEach((g) => g.dispose());
       ctx.mats.forEach((m) => m.dispose());
+      ctx.disposables.forEach((d) => d.dispose());
       ctx.textures.forEach((t) => t.dispose());
       env.dispose(); pmrem.dispose(); renderer.dispose();
     },

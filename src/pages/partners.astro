@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { getCollection } from 'astro:content';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
+// The work agencies and consultants most often hand to an engineering partner.
+const handOff = ['saas-development', 'web-development', 'crm-integration-development', 'android-app-development', 'whatsapp-messaging']
+  .map((id) => services.find((s) => s.id === id))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
+
+const who = [
+  { t: 'Agencies and freelancers', d: 'Your clients need software, integrations or an Android app that you do not build in-house.' },
+  { t: 'CRM and marketing consultants', d: 'You set up Zoho, HubSpot or Salesforce and need calls, WhatsApp and forms connected to it.' },
+  { t: 'Sales-led businesses', d: 'You run a call team and want every call recorded and visible in your CRM.' },
+];
+const faq = [
+  { q: 'How does a partnership work?', a: 'Tell us about your client or project. We discuss scope, timeline and how we would work together, and agree the terms in writing before any work starts.' },
+  { q: 'Can we bring our own client?', a: 'Yes. Many projects come through agencies and consultants. We are happy to work behind the scenes or alongside you, whichever suits you and your client.' },
+  { q: 'Do you work with CORE resellers?', a: 'Tell us how you would introduce CORE to your customers and we will talk through the options.' },
+];
+---
+
+<Base
+  title="Partner With Skandava"
+  description="Agencies, freelancers and CRM consultants: work with an engineering team for software, integrations, Android apps and the CORE call recording app."
+  jsonLd={[{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }]}
+>
+  <PageHero title="Partner with Skandava." lead="If your clients need engineering you do not have in-house, we would like to hear from you." crumbs={[{ label: 'Partners' }]} />
+  <section class="mx-auto max-w-[1200px] px-3 pb-3">
+    <ul class="grid gap-3 md:grid-cols-3">
+      {who.map((w, i) => (
+        <li class:list={['tile flex min-h-[18rem] flex-col items-center justify-center px-8 py-12', i === 0 ? 'tile-dark' : 'tile-light']}>
+          <h2 class="h3">{w.t}</h2><p class="sub mt-4 text-[1.15rem] leading-snug">{w.d}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="container-x max-w-3xl pt-20" aria-labelledby="hand-h">
+    <h2 id="hand-h" class="h2 mb-10">What partners hand to us.</h2>
+    <ul class="divide-y divide-line border-y border-line">
+      {handOff.map((s) => (
+        <li class="py-5">
+          <a href={`/services/${s.id}/`} class="link text-[1.3rem] font-semibold tracking-tight">{s.data.title}</a>
+          <p class="mt-1 text-[1.05rem] leading-snug text-muted">{s.data.summary}</p>
+        </li>
+      ))}
+      <li class="py-5">
+        <a href="/core/" class="link text-[1.3rem] font-semibold tracking-tight">CORE call recorder</a>
+        <p class="mt-1 text-[1.05rem] leading-snug text-muted">An Android app that records offline calls and syncs them to a CRM, for clients who run call teams.</p>
+      </li>
+    </ul>
+  </section>
+  <section class="container-x max-w-3xl py-20" aria-labelledby="pfaq">
+    <h2 id="pfaq" class="h2 mb-10">Questions we hear a lot.</h2>
+    <div class="divide-y divide-line border-y border-line">
+      {faq.map((f) => (
+        <details class="group py-6">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-[1.3rem] font-semibold tracking-tight">{f.q}<span class="text-2xl font-light text-muted transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+          <p class="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+  <section class="container-x pb-20 text-center">
+    <a href="/contact/?topic=partner" class="btn btn-primary">Tell us about your project</a>
+  </section>
+</Base>

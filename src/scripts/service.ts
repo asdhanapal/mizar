@@ -7,7 +7,7 @@ const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1);
 async function boot() {
   if (!canvas || !svc || !document.documentElement.classList.contains('svc-on')) return;
   const { mountStage } = await import('./stage');
-  const stage: Stage | null = mountStage(canvas, canvas.dataset.kind as Kind);
+  const stage: Stage | null = await mountStage(canvas, canvas.dataset.kind as Kind);
   if (!stage) {
     document.documentElement.classList.remove('svc-on');
     return;

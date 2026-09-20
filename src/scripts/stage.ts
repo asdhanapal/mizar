@@ -12,6 +12,12 @@ import {
   PlaneGeometry,
   PMREMGenerator,
   Scene,
+  BufferAttribute,
+  Color,
+  LineBasicMaterial,
+  LineSegments,
+  Points,
+  PointsMaterial,
   SRGBColorSpace,
   WebGLRenderer,
 } from 'three';
@@ -42,6 +48,7 @@ export interface Built {
 
 export interface Ctx {
   renderer: WebGLRenderer;
+  disposables: { dispose(): void }[];
   geos: BufferGeometry[];
   mats: (MeshPhysicalMaterial | MeshBasicMaterial)[];
   textures: CanvasTexture[];
@@ -113,7 +120,7 @@ function drawEditor(g: CanvasRenderingContext2D, w: number, h: number) {
     g.font = "500 22px ui-monospace, Menlo, monospace";
     for (const [s, col] of ln) { g.fillStyle = col; g.textAlign = 'left'; g.fillText(s, x, y); x += g.measureText(s).width; }
   });
-  g.fillStyle = '#0a84ff'; g.fillRect(0, h - 30, w, 30);
+  g.fillStyle = '#227e0d'; g.fillRect(0, h - 30, w, 30);
   text(g, 'main', 16, h - 10, 14, '#fff', 500);
   text(g, 'TypeScript', w - 16, h - 10, 14, '#fff', 500, 'right');
 }
@@ -158,7 +165,7 @@ export function buildLaptop(c: Ctx): Built {
   return {
     root,
     update(p) {
-      const open = smooth(clamp01(p / 0.5));
+      const open = smooth(clamp01(p / 0.7));
       hinge.rotation.x = -lerp(0, 1.85, open);
       root.rotation.y = lerp(0.6, -0.32, smooth(p));
       root.rotation.x = lerp(0.34, 0.1, smooth(clamp01(p / 0.6)));
@@ -193,11 +200,11 @@ function drawSerp(g: CanvasRenderingContext2D) {
   g.strokeStyle = '#6e6e73'; g.lineWidth = 4; g.lineCap = 'round';
   g.beginPath(); g.arc(90, 76, 13, 0, Math.PI * 2); g.moveTo(100, 87); g.lineTo(112, 99); g.stroke();
   text(g, 'accounting software for small business', 132, 90, 29, '#6e6e73', 400);
-  rr(g, 40, 148, 940, 214, 26); g.fillStyle = '#f5faff'; g.fill(); g.strokeStyle = '#0071e3'; g.lineWidth = 4; g.stroke();
+  rr(g, 40, 148, 940, 214, 26); g.fillStyle = '#f3faf0'; g.fill(); g.strokeStyle = '#227e0d'; g.lineWidth = 4; g.stroke();
   g.beginPath(); g.arc(92, 206, 22, 0, Math.PI * 2); g.fillStyle = '#1d1d1f'; g.fill();
   text(g, '1', 92, 216, 26, '#fff', 600, 'center');
   text(g, 'yourbusiness.com', 136, 200, 23, '#6e6e73', 400);
-  text(g, 'Accounting software built for small teams', 136, 246, 34, '#0066cc', 600);
+  text(g, 'Accounting software built for small teams', 136, 246, 34, '#1c700b', 600);
   g.font = '400 25px system-ui, sans-serif';
   wrap(g, 'Send invoices, track expenses and file taxes without a spreadsheet.', 800).forEach((l, i) => text(g, l, 136, 292 + i * 34, 25, '#6e6e73', 400));
   g.globalAlpha = 0.5;
@@ -205,7 +212,7 @@ function drawSerp(g: CanvasRenderingContext2D) {
     g.beginPath(); g.arc(92, (y as number) + 30, 20, 0, Math.PI * 2); g.fillStyle = '#6e6e73'; g.fill();
     text(g, n as string, 92, (y as number) + 39, 23, '#fff', 600, 'center');
     text(g, u as string, 136, (y as number) + 24, 22, '#6e6e73', 400);
-    text(g, t as string, 136, (y as number) + 64, 30, '#0066cc', 600);
+    text(g, t as string, 136, (y as number) + 64, 30, '#1c700b', 600);
   });
   g.globalAlpha = 1;
 }
@@ -221,9 +228,9 @@ function drawChart(g: CanvasRenderingContext2D) {
   const pts = [0.1, 0.18, 0.3, 0.42, 0.6, 0.9].map((v, i) => [x0 + ((x1 - x0) / 5) * i, y1 - v * (y1 - y0)]);
   const path = () => { g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) { const [px, py] = pts[i - 1], [cx, cy] = pts[i]; g.bezierCurveTo((px + cx) / 2, py, (px + cx) / 2, cy, cx, cy); } };
   path(); g.lineTo(x1, y1); g.lineTo(x0, y1); g.closePath();
-  const grad = g.createLinearGradient(0, y0, 0, y1); grad.addColorStop(0, 'rgba(0,113,227,.28)'); grad.addColorStop(1, 'rgba(0,113,227,0)');
+  const grad = g.createLinearGradient(0, y0, 0, y1); grad.addColorStop(0, 'rgba(34,126,13,.28)'); grad.addColorStop(1, 'rgba(34,126,13,0)');
   g.fillStyle = grad; g.fill();
-  path(); g.strokeStyle = '#0071e3'; g.lineWidth = 8; g.lineCap = 'round'; g.stroke();
+  path(); g.strokeStyle = '#227e0d'; g.lineWidth = 8; g.lineCap = 'round'; g.stroke();
   const [ex, ey] = pts[pts.length - 1];
   g.beginPath(); g.arc(ex, ey, 15, 0, Math.PI * 2); g.fillStyle = '#fff'; g.fill(); g.lineWidth = 7; g.stroke();
   rr(g, ex - 150, ey - 30, 118, 50, 25); g.fillStyle = '#1d1d1f'; g.fill();
@@ -238,7 +245,7 @@ function drawKeywords(g: CanvasRenderingContext2D) {
     const y = 130 + i * 118;
     rr(g, 40, y, 940, 96, 22); g.fillStyle = '#f5f5f7'; g.fill();
     text(g, k, 76, y + 60, 31, '#1d1d1f', 500);
-    rr(g, 840, y + 22, 100, 52, 26); g.fillStyle = i === 0 ? '#0071e3' : '#e8e8ed'; g.fill();
+    rr(g, 840, y + 22, 100, 52, 26); g.fillStyle = i === 0 ? '#227e0d' : '#e8e8ed'; g.fill();
     text(g, `#${n}`, 890, y + 58, 27, i === 0 ? '#fff' : '#1d1d1f', 600, 'center');
     g.fillStyle = '#30d158'; g.beginPath(); g.moveTo(800, y + 60); g.lineTo(814, y + 34); g.lineTo(828, y + 60); g.closePath(); g.fill();
   });
@@ -265,7 +272,7 @@ export function buildCards(c: Ctx): Built {
   return {
     root,
     update(p, t) {
-      const e = smooth(clamp01(p / 0.8));
+      const e = smooth(clamp01(p / 0.9));
       cards.forEach((card, i) => {
         card.position.set(lerp(P0[i][0], P1[i][0], e), lerp(P0[i][1], P1[i][1], e) + Math.sin(t * 0.9 + i * 1.7) * 0.05, lerp(P0[i][2], P1[i][2], e));
         card.rotation.y = lerp(RY0[i], RY1[i], e);
@@ -296,7 +303,7 @@ function buildStack(c: Ctx): Built {
   const root = new Group();
   const labels: [string, boolean][] = [['Network', false], ['Storage', false], ['Database', false], ['App', true]];
   const slabs = labels.map(([label, accent]) => {
-    const m = mat(c, new MeshPhysicalMaterial({ color: accent ? '#0071e3' : '#f2f2f4', metalness: accent ? 0.1 : 0.2, roughness: 0.35, clearcoat: 0.3 }));
+    const m = mat(c, new MeshPhysicalMaterial({ color: accent ? '#227e0d' : '#f2f2f4', metalness: accent ? 0.1 : 0.2, roughness: 0.35, clearcoat: 0.3 }));
     const g = new Group();
     g.add(new Mesh(geo(c, new RoundedBoxGeometry(3.6, 0.24, 3.6, 6, 0.11)), m));
     const top = new Mesh(geo(c, new PlaneGeometry(3.4, 3.4)), flat(c, tex(c, 700, 700, drawSlab(label, accent)), true));
@@ -325,7 +332,7 @@ function buildStack(c: Ctx): Built {
 // ============================================================================
 function bubble(g: CanvasRenderingContext2D, x: number, y: number, w: number, lines: string[], out: boolean) {
   const h = 30 + lines.length * 36;
-  rr(g, x, y, w, h, 26); g.fillStyle = out ? '#0a84ff' : '#2a2a2e'; g.fill();
+  rr(g, x, y, w, h, 26); g.fillStyle = out ? '#2a9210' : '#2a2a2e'; g.fill();
   lines.forEach((l, i) => text(g, l, x + 24, y + 46 + i * 36, 26, '#fff', 400));
   return h;
 }
@@ -342,7 +349,7 @@ function chatHeader(g: CanvasRenderingContext2D) {
 const chat1 = (g: CanvasRenderingContext2D) => { chatHeader(g); const h = bubble(g, 34, 250, 400, ['Hi Anita, your order', '1042 is out for delivery', 'today.'], false); text(g, '10:02', 34, 250 + h + 32, 20, '#8e8e93', 400); };
 const chat2 = (g: CanvasRenderingContext2D) => {
   chatHeader(g); bubble(g, 34, 250, 400, ['Hi Anita, your order', '1042 is out for delivery', 'today.'], false);
-  ['Track order', 'Change time'].forEach((b, i) => { const x = 34 + i * 200; rr(g, x, 470, 184, 56, 28); g.strokeStyle = '#0a84ff'; g.lineWidth = 3; g.stroke(); text(g, b, x + 92, 506, 22, '#0a84ff', 500, 'center'); });
+  ['Track order', 'Change time'].forEach((b, i) => { const x = 34 + i * 200; rr(g, x, 470, 184, 56, 28); g.strokeStyle = '#5dd435'; g.lineWidth = 3; g.stroke(); text(g, b, x + 92, 506, 22, '#5dd435', 500, 'center'); });
   bubble(g, 130, 570, 376, ['Thanks! Can it come', 'after 5 pm?'], true);
 };
 const chat3 = (g: CanvasRenderingContext2D) => {
@@ -379,13 +386,13 @@ function buildChat(c: Ctx): Built {
 function drawDashboard(g: CanvasRenderingContext2D, w: number, h: number) {
   g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
   g.fillStyle = '#f5f5f7'; g.fillRect(0, 0, 250, h);
-  rr(g, 30, 34, 44, 44, 12); g.fillStyle = '#0071e3'; g.fill();
+  rr(g, 30, 34, 44, 44, 12); g.fillStyle = '#227e0d'; g.fill();
   text(g, 'YourApp', 90, 66, 28, '#1d1d1f', 600);
   ['Overview', 'Customers', 'Billing', 'Reports', 'Settings'].forEach((n, i) => {
     const y = 130 + i * 62;
-    if (i === 0) { rr(g, 18, y - 6, 214, 50, 14); g.fillStyle = 'rgba(0,113,227,.12)'; g.fill(); }
-    g.beginPath(); g.arc(50, y + 19, 9, 0, Math.PI * 2); g.fillStyle = i === 0 ? '#0071e3' : '#c7c7cc'; g.fill();
-    text(g, n, 78, y + 28, 24, i === 0 ? '#0071e3' : '#424245', i === 0 ? 600 : 400);
+    if (i === 0) { rr(g, 18, y - 6, 214, 50, 14); g.fillStyle = 'rgba(34,126,13,.12)'; g.fill(); }
+    g.beginPath(); g.arc(50, y + 19, 9, 0, Math.PI * 2); g.fillStyle = i === 0 ? '#227e0d' : '#c7c7cc'; g.fill();
+    text(g, n, 78, y + 28, 24, i === 0 ? '#227e0d' : '#424245', i === 0 ? 600 : 400);
   });
   text(g, 'Overview', 290, 78, 38, '#1d1d1f', 600);
   rr(g, w - 520, 36, 340, 56, 28); g.fillStyle = '#f2f2f4'; g.fill();
@@ -405,9 +412,9 @@ function drawDashboard(g: CanvasRenderingContext2D, w: number, h: number) {
   const pts = [0.3, 0.4, 0.36, 0.52, 0.6, 0.58, 0.74, 0.84].map((v, i) => [322 + i * (1000 / 7), 590 - v * 210]);
   const path = () => { g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) { const [px, py] = pts[i - 1], [cx, cy] = pts[i]; g.bezierCurveTo((px + cx) / 2, py, (px + cx) / 2, cy, cx, cy); } };
   path(); g.lineTo(pts[7][0], 600); g.lineTo(pts[0][0], 600); g.closePath();
-  const grad = g.createLinearGradient(0, 380, 0, 600); grad.addColorStop(0, 'rgba(0,113,227,.3)'); grad.addColorStop(1, 'rgba(0,113,227,0)');
+  const grad = g.createLinearGradient(0, 380, 0, 600); grad.addColorStop(0, 'rgba(34,126,13,.3)'); grad.addColorStop(1, 'rgba(34,126,13,0)');
   g.fillStyle = grad; g.fill();
-  path(); g.strokeStyle = '#0071e3'; g.lineWidth = 6; g.lineCap = 'round'; g.stroke();
+  path(); g.strokeStyle = '#227e0d'; g.lineWidth = 6; g.lineCap = 'round'; g.stroke();
   text(g, 'Recent signups', 290, 682, 26, '#1d1d1f', 600);
   [['Anita M.', 'Pro', 'Active'], ['Ravi K.', 'Team', 'Trial'], ['Sunrise Bakery', 'Pro', 'Active']].forEach(([n, plan, st], i) => {
     const y = 700 + i * 56;
@@ -426,14 +433,14 @@ function drawBilling(g: CanvasRenderingContext2D, w: number, h: number) {
   text(g, '$49 / month', 44, 224, 30, '#6e6e73', 400);
   g.fillStyle = '#ececf0'; g.fillRect(44, 262, w - 88, 2);
   text(g, 'Next invoice on Oct 1', 44, 314, 26, '#6e6e73', 400);
-  rr(g, 44, 340, 250, 62, 31); g.fillStyle = '#0071e3'; g.fill();
+  rr(g, 44, 340, 250, 62, 31); g.fillStyle = '#227e0d'; g.fill();
   text(g, 'Manage plan', 169, 381, 26, '#fff', 600, 'center');
 }
 
 function drawTeam(g: CanvasRenderingContext2D, w: number, h: number) {
   g.fillStyle = '#fff'; g.fillRect(0, 0, w, h);
   text(g, 'Team', 44, 72, 34, '#6e6e73', 500);
-  [['Priya S.', 'Admin', '#0071e3'], ['Ravi K.', 'Editor', '#ff9f0a'], ['Anita M.', 'Viewer', '#30d158']].forEach(([n, r, col], i) => {
+  [['Priya S.', 'Admin', '#227e0d'], ['Ravi K.', 'Editor', '#ff9f0a'], ['Anita M.', 'Viewer', '#30d158']].forEach(([n, r, col], i) => {
     const y = 120 + i * 92;
     g.beginPath(); g.arc(80, y + 34, 30, 0, Math.PI * 2); g.fillStyle = col; g.fill();
     text(g, n[0], 80, y + 46, 30, '#fff', 600, 'center');
@@ -448,7 +455,7 @@ function drawUsage(g: CanvasRenderingContext2D, w: number, h: number) {
   const cx = w / 2, cy = 254, r = 112;
   g.lineWidth = 28; g.lineCap = 'round';
   g.strokeStyle = '#ececf0'; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
-  g.strokeStyle = '#0071e3'; g.beginPath(); g.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * 0.72); g.stroke();
+  g.strokeStyle = '#227e0d'; g.beginPath(); g.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * 0.72); g.stroke();
   text(g, '72%', cx, cy + 20, 62, '#1d1d1f', 600, 'center');
   text(g, 'of monthly limit', cx, 402, 24, '#6e6e73', 400, 'center');
 }
@@ -483,7 +490,7 @@ export function buildSaas(c: Ctx): Built {
   return {
     root,
     update(a, t) {
-      const e = smooth(clamp01(a / 0.75));
+      const e = smooth(clamp01(a / 0.9));
       display.rotation.y = lerp(-0.42, 0.2, smooth(a));
       display.rotation.x = 0.03;
       panels.forEach((p, i) => {
@@ -499,14 +506,160 @@ export function buildSaas(c: Ctx): Built {
   };
 }
 
+
+// ============================================================================
+// Abstract network: a neural net, a DNA helix or a node mesh behind each object
+// ============================================================================
+type V3 = [number, number, number];
+export type NetKind = 'neural' | 'helix' | 'mesh';
+export interface NetStyle { kind: NetKind; color: string; seed: number }
+
+export const NETS: Record<string, NetStyle> = {
+  saas: { kind: 'neural', color: '#227e0d', seed: 3 },
+  cards: { kind: 'helix', color: '#2a9d4f', seed: 5 },
+  laptop: { kind: 'mesh', color: '#e8952a', seed: 7 },
+  core: { kind: 'mesh', color: '#7a6cf0', seed: 11 },
+  chat: { kind: 'mesh', color: '#2a9d4f', seed: 13 },
+  stack: { kind: 'neural', color: '#227e0d', seed: 17 },
+};
+
+function rng(seed: number) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+
+function layout(kind: NetKind, seed: number): { nodes: V3[]; edges: [number, number][]; drift: number } {
+  const r = rng(seed);
+  const nodes: V3[] = [];
+  const edges: [number, number][] = [];
+  if (kind === 'neural') {
+    const layers = [4, 6, 7, 6, 4];
+    const ids: number[][] = [];
+    layers.forEach((n, li) => {
+      ids.push([]);
+      for (let i = 0; i < n; i++) {
+        const y = (i - (n - 1) / 2) * (5.2 / Math.max(n - 1, 1)) * 0.95;
+        nodes.push([(li - 2) * 1.75, y + (r() - 0.5) * 0.25, (r() - 0.5) * 1.4]);
+        ids[li].push(nodes.length - 1);
+      }
+    });
+    for (let li = 0; li < layers.length - 1; li++) for (const a of ids[li]) for (const b of ids[li + 1]) edges.push([a, b]);
+    return { nodes, edges, drift: 0.05 };
+  }
+  if (kind === 'helix') {
+    const n = 44, turns = 2.4, height = 7.2, rad = 1.15;
+    for (let s2 = 0; s2 < 2; s2++) for (let i = 0; i < n; i++) {
+      const u = i / (n - 1), ang = u * turns * Math.PI * 2 + s2 * Math.PI;
+      nodes.push([Math.cos(ang) * rad, (u - 0.5) * height, Math.sin(ang) * rad]);
+    }
+    for (let s2 = 0; s2 < 2; s2++) for (let i = 0; i < n - 1; i++) edges.push([s2 * n + i, s2 * n + i + 1]);
+    for (let i = 1; i < n - 1; i += 2) edges.push([i, n + i]);
+    return { nodes, edges, drift: 0 };
+  }
+  // mesh: nodes in an ellipsoid, linked to their nearest neighbours
+  const count = 64;
+  while (nodes.length < count) {
+    const p: V3 = [(r() * 2 - 1) * 3.6, (r() * 2 - 1) * 2.7, (r() * 2 - 1) * 1.6];
+    if ((p[0] / 3.6) ** 2 + (p[1] / 2.7) ** 2 + (p[2] / 1.6) ** 2 <= 1) nodes.push(p);
+  }
+  const seen = new Set<string>();
+  nodes.forEach((a, i) => {
+    nodes
+      .map((b, j) => ({ j, d: Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]) }))
+      .filter((o) => o.j !== i && o.d < 1.9)
+      .sort((x, y) => x.d - y.d)
+      .slice(0, 3)
+      .forEach(({ j }) => { const k = i < j ? `${i}-${j}` : `${j}-${i}`; if (!seen.has(k)) { seen.add(k); edges.push([i, j]); } });
+  });
+  return { nodes, edges, drift: 0.12 };
+}
+
+let dotTexture: CanvasTexture | null = null;
+function dot(): CanvasTexture {
+  if (dotTexture) return dotTexture;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = 64;
+  const g = cv.getContext('2d')!;
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.45, 'rgba(255,255,255,.95)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad; g.fillRect(0, 0, 64, 64);
+  dotTexture = new CanvasTexture(cv);
+  return dotTexture;
+}
+
+export function makeNetwork(c: Ctx, style: NetStyle, opts: { scale?: number; z?: number } = {}) {
+  const { nodes, edges, drift } = layout(style.kind, style.seed);
+  const r = rng(style.seed * 31);
+  const group = new Group();
+
+  const linePos = new Float32Array(edges.length * 6);
+  const lineGeo = geo(c, new BufferGeometry());
+  lineGeo.setAttribute('position', new BufferAttribute(linePos, 3));
+  const lineMat = new LineBasicMaterial({ color: style.color, transparent: true, opacity: style.kind === 'neural' ? 0.2 : 0.32, depthWrite: false });
+  const lines = new LineSegments(lineGeo, lineMat);
+  c.disposables.push(lineMat);
+
+  const nodePos = new Float32Array(nodes.length * 3);
+  const nodeGeo = geo(c, new BufferGeometry());
+  nodeGeo.setAttribute('position', new BufferAttribute(nodePos, 3));
+  const pointMat = new PointsMaterial({ color: style.color, map: dot(), size: 0.13, transparent: true, opacity: 0.75, depthWrite: false, sizeAttenuation: true });
+  const points = new Points(nodeGeo, pointMat);
+  c.disposables.push(pointMat);
+
+  // bright signal dots that travel along the connections
+  const PULSES = 7;
+  const pulsePos = new Float32Array(PULSES * 3);
+  const pulseGeo = geo(c, new BufferGeometry());
+  pulseGeo.setAttribute('position', new BufferAttribute(pulsePos, 3));
+  const pulseMat = new PointsMaterial({ color: style.color, map: dot(), size: 0.26, transparent: true, opacity: 0.95, depthWrite: false, sizeAttenuation: true });
+  const pulseMesh = new Points(pulseGeo, pulseMat);
+  c.disposables.push(pulseMat);
+  const pulses = Array.from({ length: PULSES }, () => ({ e: Math.floor(r() * edges.length), u: r(), speed: 0.35 + r() * 0.4 }));
+
+  const spin = new Group();
+  spin.add(lines, points, pulseMesh);
+  group.add(spin);
+  const cur: V3[] = nodes.map((n) => [...n] as V3);
+  const phase = nodes.map(() => [r() * 6.28, r() * 6.28, r() * 6.28]);
+
+  function update(t: number, dt: number) {
+    nodes.forEach((n, i) => {
+      cur[i][0] = n[0] + Math.sin(t * 0.5 + phase[i][0]) * drift;
+      cur[i][1] = n[1] + Math.sin(t * 0.6 + phase[i][1]) * drift;
+      cur[i][2] = n[2] + Math.sin(t * 0.4 + phase[i][2]) * drift;
+      nodePos.set(cur[i], i * 3);
+    });
+    edges.forEach(([a, b], k) => { linePos.set(cur[a], k * 6); linePos.set(cur[b], k * 6 + 3); });
+    pulses.forEach((p, i) => {
+      p.u += p.speed * dt;
+      if (p.u >= 1) { p.u = 0; p.e = Math.floor(r() * edges.length); }
+      const [a, b] = edges[p.e];
+      for (let k = 0; k < 3; k++) pulsePos[i * 3 + k] = cur[a][k] + (cur[b][k] - cur[a][k]) * p.u;
+    });
+    (lineGeo.attributes.position as BufferAttribute).needsUpdate = true;
+    (nodeGeo.attributes.position as BufferAttribute).needsUpdate = true;
+    (pulseGeo.attributes.position as BufferAttribute).needsUpdate = true;
+    if (style.kind === 'helix') spin.rotation.y = t * 0.35;
+    else if (style.kind === 'mesh') spin.rotation.y = Math.sin(t * 0.12) * 0.35;
+  }
+  update(0, 0);
+  if (style.kind === 'helix') group.rotation.z = 0.55;
+  group.scale.setScalar(opts.scale ?? 1);
+  group.position.z = opts.z ?? -1.6;
+  const setColor = (col: Color) => { lineMat.color.copy(col); pointMat.color.copy(col); pulseMat.color.copy(col); };
+  return { group, update, setColor };
+}
+
 const builders: Record<Kind, (c: Ctx) => Built> = { laptop: buildLaptop, cards: buildCards, stack: buildStack, chat: buildChat, saas: buildSaas };
 
 // ============================================================================
 export function makeCtx(renderer: WebGLRenderer): Ctx {
-  return { renderer, geos: [], mats: [], textures: [], aniso: Math.min(8, renderer.capabilities.getMaxAnisotropy()) };
+  return { renderer, disposables: [], geos: [], mats: [], textures: [], aniso: Math.min(8, renderer.capabilities.getMaxAnisotropy()) };
 }
 
-export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null {
+export async function mountStage(canvas: HTMLCanvasElement, kind: Kind): Promise<Stage | null> {
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
@@ -514,13 +667,15 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
     return null;
   }
   renderer.setClearColor(0x000000, 0);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, matchMedia('(pointer: coarse)').matches ? 1.5 : 2));
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
 
   const scene = new Scene();
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
   const pmrem = new PMREMGenerator(renderer);
   const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
   scene.environment = env;
   scene.environmentIntensity = 0.95;
   const key = new DirectionalLight(0xffffff, 1.1);
@@ -531,15 +686,17 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
   camera.position.set(0, 0.8, 10);
   camera.lookAt(0, 0, 0);
 
-  const ctx: Ctx = { renderer, geos: [], mats: [], textures: [], aniso: Math.min(8, renderer.capabilities.getMaxAnisotropy()) };
+  const ctx: Ctx = { renderer, disposables: [], geos: [], mats: [], textures: [], aniso: Math.min(8, renderer.capabilities.getMaxAnisotropy()) };
   const built = builders[kind](ctx);
   const holder = new Group();
   holder.add(built.root);
+  const orbit = makeNetwork(ctx, NETS[kind]);
+  holder.add(orbit.group);
   scene.add(holder);
 
   let prog = 0, progT = 0, px = 0, py = 0, tx = 0, ty = 0;
   let layout: Layout = built.wide;
-  let raf = 0, running = false, wanted = false, born = -1, lastW = 0;
+  let raf = 0, running = false, wanted = false, born = -1, lastW = 0, lastT = 0;
 
   function resize() {
     const w = innerWidth, h = innerHeight;
@@ -556,6 +713,8 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
   function frame(now: number) {
     raf = requestAnimationFrame(frame);
     const t = now / 1000;
+    const dtFrame = Math.min(0.05, t - lastT);
+    lastT = t;
     if (born === -1) born = t;
     const intro = 1 - easeOutCubic(clamp01((t - born) / 1.4));
     prog += (progT - prog) * 0.08;
@@ -566,6 +725,7 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
     holder.rotation.y = px * 0.1;
     holder.rotation.x = py * 0.05;
     built.update(prog, t);
+    orbit.update(t, dtFrame);
     renderer.render(scene, camera);
   }
 
@@ -592,6 +752,7 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
     },
     capture(w, h, p, lay) {
       const prevRatio = renderer.getPixelRatio();
+      orbit.group.visible = false;
       renderer.setPixelRatio(1);
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
@@ -604,6 +765,7 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
       built.update(prog, 0);
       renderer.render(scene, camera);
       const url = canvas.toDataURL('image/png');
+      orbit.group.visible = true;
       renderer.setPixelRatio(prevRatio);
       lastW = 0;
       resize();
@@ -616,6 +778,7 @@ export function mountStage(canvas: HTMLCanvasElement, kind: Kind): Stage | null 
       document.removeEventListener('visibilitychange', sync);
       ctx.geos.forEach((g) => g.dispose());
       ctx.mats.forEach((m) => m.dispose());
+      ctx.disposables.forEach((d) => d.dispose());
       ctx.textures.forEach((t) => t.dispose());
       env.dispose(); pmrem.dispose(); renderer.dispose();
     },

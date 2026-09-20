@@ -14,18 +14,24 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
         <ul class="space-y-1.5">{services.map((s) => <li><a class="hover:underline" href={`/services/${s.id}/`}>{s.data.title}</a></li>)}</ul>
       </nav>
       <nav aria-label="Product">
-        <p class="mb-2 font-semibold text-ink">Product</p>
-        <ul class="space-y-1.5"><li><a class="hover:underline" href="/core/">CORE caller app</a></li></ul>
+        <p class="mb-2 font-semibold text-ink">Product and tools</p>
+        <ul class="space-y-1.5"><li><a class="hover:underline" href="/core/">CORE caller app</a></li>
+          <li><a class="hover:underline" href="/tools/">Free tools</a></li>
+          <li><a class="hover:underline" href="/tools/whatsapp-link-generator/">WhatsApp link generator</a></li>
+          <li><a class="hover:underline" href="/tools/utm-link-builder/">UTM link builder</a></li></ul>
       </nav>
       <nav aria-label="Company">
         <p class="mb-2 font-semibold text-ink">Company</p>
         <ul class="space-y-1.5">
           <li><a class="hover:underline" href="/about/">About</a></li>
           <li><a class="hover:underline" href="/blog/">Blog</a></li>
+          <li><a class="hover:underline" href="/partners/">Partners</a></li>
           <li><a class="hover:underline" href="/contact/">Contact</a></li>
+          <li><a class="hover:underline" href="/privacy/">Privacy</a></li>
         </ul>
       </nav>
     </div>
-    <p class="pt-4">Copyright © {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+    <p class="pt-4">{site.name} is based in {site.location.neighbourhood}, {site.location.locality}, {site.location.region}.</p>
+    <p>Copyright © {new Date().getFullYear()} {site.name}. All rights reserved.</p>
   </div>
 </footer>

@@ -1,8 +1,9 @@
 ---
 title: SEO & Digital Marketing
-seoTitle: SEO & Digital Marketing Services — Technical SEO, Content, Paid Media
+seoTitle: "Technical SEO and Digital Marketing Services"
 description: Engineering-led SEO and digital marketing. Technical SEO, content strategy, paid media and analytics that turn search traffic into revenue.
 summary: Technical SEO, content, paid media and analytics that turn traffic into revenue.
+answer: "Digital marketing is how a business gets found and chosen online. Skandava combines technical SEO, content, paid campaigns and analytics, run by the engineers who build your site, and reports on real enquiries instead of vanity numbers. No one can guarantee rankings, so we show you the work and the numbers."
 order: 2
 features:
   - title: Technical SEO

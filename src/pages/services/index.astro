@@ -7,8 +7,8 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
 ---
 
 <Base
-  title="Services: Software, Cloud, SEO & WhatsApp Messaging"
-  description="Custom software development, AWS cloud solutions, SEO and digital marketing, and WhatsApp Business messaging from one engineering-led team."
+  title="Services: Software, Web, Cloud, CRM and Marketing"
+  description="SaaS and web development, Android apps, CRM integration, AWS cloud, SEO and digital marketing, and WhatsApp messaging from one engineering-led team."
   jsonLd={[{
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -26,5 +26,20 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
         </li>
       ))}
     </ul>
+  </section>
+
+  <section class="container-x max-w-3xl py-20" aria-labelledby="guide-h">
+    <h2 id="guide-h" class="h2 mb-10">Which one do you need?</h2>
+    <dl class="divide-y divide-line border-y border-line">
+      {services.filter((s) => s.data.answer).map((s) => (
+        <div class="py-6">
+          <dt class="text-[1.3rem] font-semibold tracking-tight"><a href={`/services/${s.id}/`} class="link">{s.data.title}</a></dt>
+          <dd class="mt-2 text-[1.1rem] leading-relaxed text-muted">{s.data.answer}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="mt-10 text-[1.1rem] leading-relaxed text-muted">
+      Looking for a product instead of a project? See <a href="/core/" class="link">CORE, our call recorder for sales teams</a>, or try the <a href="/tools/" class="link">free tools</a>. Building for a client of your own? Read how <a href="/partners/" class="link">partners work with us</a>. Want to know who is behind the work? See <a href="/about/" class="link">about Skandava</a>.
+    </p>
   </section>
 </Base>

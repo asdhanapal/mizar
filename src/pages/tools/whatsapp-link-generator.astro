@@ -1,0 +1,177 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const countries: [string, string][] = [
+  ['India', '91'], ['United States', '1'], ['United Kingdom', '44'], ['United Arab Emirates', '971'], ['Saudi Arabia', '966'],
+  ['Qatar', '974'], ['Kuwait', '965'], ['Oman', '968'], ['Bahrain', '973'], ['Singapore', '65'], ['Malaysia', '60'],
+  ['Australia', '61'], ['Canada', '1'], ['Sri Lanka', '94'], ['Nepal', '977'], ['Bangladesh', '880'], ['Pakistan', '92'],
+  ['Germany', '49'], ['France', '33'],
+];
+
+const faq = [
+  { q: 'Is the WhatsApp link generator free?', a: 'Yes. It is free to use, with no sign-up. The link is built in your browser and nothing you type is sent to us or stored.' },
+  { q: 'Does the link work for WhatsApp Business too?', a: 'Yes. The link opens a chat with your number in WhatsApp or WhatsApp Business, on a phone or on WhatsApp Web.' },
+  { q: 'How do I make a WhatsApp QR code?', a: 'Enter your number and message above. The QR code appears with your link. Download it as a picture and print it on posters, menus, visiting cards or shop windows. When a customer scans it, WhatsApp opens a chat with you.' },
+  { q: 'What is a click-to-chat link?', a: 'A link that opens a WhatsApp chat with your number when someone taps it. You can place it on your website, in your social profiles, on a poster as a QR code, or in an email.' },
+  { q: 'Can I use this to send messages to many people?', a: 'No. This link lets customers start a chat with you. Sending messages to many people needs the official WhatsApp Business Platform, with permission from each person and approved templates.' },
+  { q: 'Why does my link not open?', a: 'Check that the country code is right and that the number has no extra zeros at the start. Use digits only, without spaces or plus signs. The number must be registered on WhatsApp.' },
+];
+---
+
+<Base
+  title="Free WhatsApp Link and QR Code Generator"
+  description="Create a free WhatsApp click-to-chat link and QR code with a ready-made message. Works for WhatsApp and WhatsApp Business. Nothing is stored."
+  jsonLd={[
+    { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'WhatsApp Link Generator', url: 'https://skandava.com/tools/whatsapp-link-generator/', applicationCategory: 'BusinessApplication', operatingSystem: 'Any (web browser)', description: 'Free tool that builds a WhatsApp click-to-chat link with an optional pre-filled message.', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, publisher: { '@id': 'https://skandava.com/#organization' } },
+    { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+  ]}
+>
+  <PageHero title="Free WhatsApp link and QR code generator." lead="Make a click-to-chat link and a printable QR code for your business number, with a message already typed for your customer. Nothing is stored or sent to us." crumbs={[{ label: 'Free tools' }, { label: 'WhatsApp link generator' }]} />
+
+  <section class="container-x max-w-2xl pb-16">
+    <div class="tile tile-light px-6 py-8 text-left sm:px-10">
+      <form id="wa-form" class="grid gap-5" novalidate>
+        <div class="grid gap-5 sm:grid-cols-[1fr_1.4fr]">
+          <label class="grid gap-2 text-sm font-medium">Country
+            <select id="wa-country" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15">
+              {countries.map(([name, code]) => <option value={code} selected={name === 'India'}>{name} (+{code})</option>)}
+            </select>
+          </label>
+          <label class="grid gap-2 text-sm font-medium">WhatsApp number
+            <input id="wa-phone" inputmode="tel" autocomplete="tel-national" placeholder="98765 43210" class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15" />
+          </label>
+        </div>
+        <label class="grid gap-2 text-sm font-medium">Message (optional)
+          <textarea id="wa-message" rows="3" maxlength="500" placeholder="Hi, I would like to know more about your services." class="w-full rounded-xl border border-line bg-white px-4 py-3.5 text-[1.05rem] outline-none focus:border-brand focus:ring-4 focus:ring-brand/15"></textarea>
+        </label>
+      </form>
+
+      <p id="wa-status" role="status" aria-live="polite" class="mt-5 min-h-[1.5rem] text-sm text-muted">Enter your number to create the link.</p>
+
+      <div id="wa-result" hidden class="mt-2 grid gap-4">
+        <div>
+          <p class="mb-2 text-sm font-medium">Your link</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <input id="wa-link" readonly class="min-w-0 flex-1 rounded-xl border border-line bg-white px-4 py-3 text-[0.95rem]" aria-label="Your WhatsApp link" />
+            <button type="button" data-copy="wa-link" class="btn btn-primary !px-5 !py-3">Copy link</button>
+          </div>
+        </div>
+        <div>
+          <p class="mb-2 text-sm font-medium">Button code for your website</p>
+          <div class="flex flex-wrap items-center gap-3">
+            <input id="wa-html" readonly class="min-w-0 flex-1 rounded-xl border border-line bg-white px-4 py-3 text-[0.85rem]" aria-label="HTML code" />
+            <button type="button" data-copy="wa-html" class="btn btn-outline !px-5 !py-3">Copy code</button>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-6">
+          <div id="wa-qr" class="h-40 w-40 rounded-xl bg-white p-2" role="img" aria-label="QR code for your WhatsApp link"></div>
+          <div class="grid gap-3">
+            <button type="button" id="wa-qr-download" class="btn btn-outline !px-5 !py-3">Download QR code (PNG)</button>
+            <a id="wa-test" target="_blank" rel="noopener" class="link w-fit text-[1.1rem]">Test your link</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-x max-w-2xl pb-16">
+    <div class="prose-site text-[1.1rem]">
+      <h2>How to use your link</h2>
+      <ol>
+        <li>Choose your country and type your WhatsApp number without the country code and without a leading zero.</li>
+        <li>Write the message you would like customers to send you (optional).</li>
+        <li>Copy the link and put it wherever your customers are: your website, Instagram or Facebook profile, email signature, Google Business Profile, ads or a printed QR code.</li>
+      </ol>
+
+      <h2>Where a click-to-chat link works well</h2>
+      <ul>
+        <li>A "Chat with us" button on your website that opens WhatsApp</li>
+        <li>The link in your social media bio</li>
+        <li>Adverts that send people straight to a conversation</li>
+        <li>Email signatures and quotations</li>
+      </ul>
+
+      <h2>Tips for better conversations</h2>
+      <ul>
+        <li>Pre-fill a friendly, specific message such as "Hi, I would like a quote for a website".</li>
+        <li>Reply quickly. People who message on WhatsApp expect fast answers.</li>
+        <li>Use WhatsApp Business to add your business profile, opening hours and quick replies.</li>
+      </ul>
+      <p>Want to send order updates, reminders or offers to many customers safely? That needs the official platform. See our <a href="/services/whatsapp-messaging/">WhatsApp business messaging service</a>.</p>
+    </div>
+  </section>
+
+  <section class="container-x max-w-3xl pb-20" aria-labelledby="faq-h">
+    <h2 id="faq-h" class="h2 mb-10">Questions we hear a lot.</h2>
+    <div class="divide-y divide-line border-y border-line">
+      {faq.map((f) => (
+        <details class="group py-6">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-[1.3rem] font-semibold tracking-tight">{f.q}<span class="text-2xl font-light text-muted transition group-open:rotate-45" aria-hidden="true">+</span></summary>
+          <p class="mt-4 max-w-2xl text-[1.1rem] leading-relaxed text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+    const country = $('wa-country'), phone = $('wa-phone'), message = $('wa-message');
+    const status = document.getElementById('wa-status')!, result = document.getElementById('wa-result')!;
+    import qrcode from 'qrcode-generator';
+    import { track } from '../../scripts/track';
+    const link = $('wa-link'), html = $('wa-html'), test = document.getElementById('wa-test') as HTMLAnchorElement;
+    const qrBox = document.getElementById('wa-qr')!;
+    let qrSvg = '';
+
+    function update() {
+      const national = phone.value.replace(/\D/g, '').replace(/^0+/, '');
+      const full = country.value + national;
+      if (!national) { result.hidden = true; status.textContent = 'Enter your number to create the link.'; return; }
+      if (full.length < 8 || full.length > 15) { result.hidden = true; status.textContent = 'That number looks the wrong length. Use digits only, without the country code.'; return; }
+      const text = message.value.trim();
+      const url = `https://wa.me/${full}${text ? `?text=${encodeURIComponent(text)}` : ''}`;
+      link.value = url;
+      html.value = `<a href="${url}" target="_blank" rel="noopener">Chat with us on WhatsApp</a>`;
+      test.href = url;
+      const qr = qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      qrSvg = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+      qrBox.innerHTML = qrSvg;
+      result.hidden = false;
+      status.textContent = 'Your link is ready.';
+    }
+    [country, phone, message].forEach((el) => el.addEventListener('input', update));
+    document.getElementById('wa-form')!.addEventListener('submit', (e) => e.preventDefault());
+
+    document.getElementById('wa-qr-download')!.addEventListener('click', () => {
+      if (!qrSvg) return;
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 800;
+        const g = canvas.getContext('2d')!;
+        g.fillStyle = '#fff'; g.fillRect(0, 0, 800, 800);
+        g.drawImage(img, 0, 0, 800, 800);
+        const a = document.createElement('a');
+        a.download = 'whatsapp-qr-code.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        track('tool_qr_download', { tool: 'whatsapp' });
+      };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(qrSvg.includes('xmlns') ? qrSvg : qrSvg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"'));
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const field = $(btn.dataset.copy!);
+        try { await navigator.clipboard.writeText(field.value); } catch { field.select(); document.execCommand('copy'); }
+        const old = btn.textContent;
+        btn.textContent = 'Copied';
+        track('tool_copy', { tool: 'whatsapp' });
+        setTimeout(() => { btn.textContent = old; }, 1600);
+      });
+    });
+  </script>
+</Base>

@@ -1,0 +1,18 @@
+---
+import { site } from '../site';
+const text = encodeURIComponent('Hi Skandava, I found you on your website and would like to talk.');
+---
+
+{site.whatsapp && (
+  <a
+    href={`https://wa.me/${site.whatsapp}?text=${text}`}
+    target="_blank"
+    rel="noopener"
+    data-track="whatsapp_click"
+    aria-label="Chat with us on WhatsApp"
+    class="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3.5 text-[0.95rem] font-semibold text-white shadow-[0_10px_30px_-8px_rgba(34,126,13,.6)] transition hover:bg-[#2a9210] focus-visible:outline-offset-4"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.5L3 21l1.6-5.4A8.5 8.5 0 1 1 21 12Z" /></svg>
+    <span class="max-sm:sr-only">WhatsApp us</span>
+  </a>
+)}

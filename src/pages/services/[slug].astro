@@ -7,6 +7,9 @@ import SerpMock from '../../components/art/SerpMock.astro';
 import CodeWindow from '../../components/art/CodeWindow.astro';
 import ArchDiagram from '../../components/art/ArchDiagram.astro';
 import DashMock from '../../components/art/DashMock.astro';
+import Abstract from '../../components/Abstract.astro';
+import { getPosts } from '../../lib/posts';
+import { site } from '../../site';
 
 export async function getStaticPaths() {
   const services = await getCollection('services');
@@ -19,9 +22,13 @@ const look: Record<string, { dark: boolean; Art: any }> = {
   'web-development': { dark: true, Art: CodeWindow },
   'whatsapp-messaging': { dark: false, Art: ChatMock },
   'cloud-aws': { dark: false, Art: ArchDiagram },
+  'crm-integration-development': { dark: false, Art: DashMock },
+  'android-app-development': { dark: false, Art: ChatMock },
+  'it-services': { dark: false, Art: ArchDiagram },
 };
 
-const kinds: Record<string, string> = { 'saas-development': 'saas', 'seo-digital-marketing': 'cards', 'web-development': 'laptop', 'whatsapp-messaging': 'chat', 'cloud-aws': 'stack' };
+const washes: Record<string, string> = { 'saas-development': '', 'seo-digital-marketing': 'wash-green', 'web-development': 'wash-amber', 'whatsapp-messaging': 'wash-green', 'cloud-aws': '', 'crm-integration-development': '', 'android-app-development': 'wash-green', 'it-services': 'wash-amber' };
+const kinds: Record<string, string> = { 'saas-development': 'saas', 'seo-digital-marketing': 'cards', 'web-development': 'laptop', 'whatsapp-messaging': 'chat', 'cloud-aws': 'stack', 'crm-integration-development': 'saas', 'android-app-development': 'chat', 'it-services': 'stack' };
 
 const { entry } = Astro.props;
 const { data } = entry;
@@ -29,8 +36,21 @@ const { dark, Art } = look[entry.id] ?? { dark: false, Art: PhoneCall };
 const { Content } = await render(entry);
 const url = `https://skandava.com/services/${entry.id}/`;
 
+// Every article that says it belongs to this service is linked here automatically, so new posts never start as orphans.
+const guides = (await getPosts()).filter((p) => p.data.related?.href === `/services/${entry.id}/`);
+
 const jsonLd = [
-  { '@context': 'https://schema.org', '@type': 'Service', name: data.title, description: data.description, url, provider: { '@id': 'https://skandava.com/#organization' } },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: data.title,
+    serviceType: data.title,
+    description: data.description,
+    url,
+    provider: { '@id': 'https://skandava.com/#organization' },
+    ...(site.areaServed.length ? { areaServed: site.areaServed } : {}),
+  },
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -50,13 +70,13 @@ const jsonLd = [
   <script is:inline slot="head">
     try {
       var c = document.createElement('canvas');
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && (navigator.hardwareConcurrency || 8) > 2 && !(navigator.connection && navigator.connection.saveData) && (c.getContext('webgl2') || c.getContext('webgl'))) document.documentElement.classList.add('svc-on');
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && (navigator.hardwareConcurrency || 8) > 2 && !(navigator.connection && navigator.connection.saveData) && !(matchMedia('(pointer: coarse)').matches && ((navigator.deviceMemory || 8) <= 4 || (navigator.hardwareConcurrency || 8) <= 4)) && (c.getContext('webgl2') || c.getContext('webgl'))) document.documentElement.classList.add('svc-on');
     } catch (e) {}
   </script>
 
   <!-- 3D hero: pinned while you scroll. Without WebGL it falls back to a plain hero plus the 2D mockup below. -->
   <section id="svc" class="svc" aria-label={data.title}>
-    <div class="svc-stage">
+    <div class:list={['svc-stage wash', washes[entry.id]]}>
       <canvas id="stage" data-kind={kinds[entry.id]} aria-hidden="true" class="svc-canvas"></canvas>
       <div class="container-x svc-inner">
         <div class="svc-copy">
@@ -75,10 +95,20 @@ const jsonLd = [
   </section>
 
   <section class="svc-fallback mx-auto mt-16 max-w-[1200px] px-3">
-    <div class:list={['tile overflow-hidden px-6 py-16 sm:py-24', dark ? 'tile-dark' : 'tile-light']}><Art /></div>
+    <div class:list={['tile overflow-hidden px-6 py-16 sm:py-16', dark ? 'tile-dark' : 'tile-light']}><Art /></div>
   </section>
 
-<section class="container-x py-28" aria-labelledby="what-h">
+{data.answer && (
+    <section class="container-x max-w-3xl pt-16" aria-label="In short">
+      <div class="rounded-3xl bg-fog px-7 py-6 sm:px-9 sm:py-7">
+        <p class="text-sm font-semibold text-muted">In short</p>
+        <p class="mt-2 text-[1.25rem] leading-snug tracking-tight">{data.answer}</p>
+      </div>
+    </section>
+  )}
+
+
+  <section class="container-x py-20" aria-labelledby="what-h">
     <h2 id="what-h" class="h2 max-w-2xl">What you get.</h2>
     <div class="mt-14 grid gap-x-14 gap-y-12 sm:grid-cols-2">
       {data.features.map((f) => (
@@ -90,12 +120,12 @@ const jsonLd = [
     </div>
   </section>
 
-  <section class="bg-fog py-24">
+  <section class="bg-fog py-16">
     <div class="container-x max-w-3xl"><div class="prose-site"><Content /></div></div>
   </section>
 
   {data.faq.length > 0 && (
-    <section class="container-x max-w-3xl py-28" aria-labelledby="faq-h">
+    <section class="container-x max-w-3xl py-20" aria-labelledby="faq-h">
       <h2 id="faq-h" class="h2 mb-10">Questions we hear a lot.</h2>
       <div class="divide-y divide-line border-y border-line">
         {data.faq.map((f) => (
@@ -110,7 +140,21 @@ const jsonLd = [
     </section>
   )}
 
-  <section class="container-x pb-28 text-center">
+  {guides.length > 0 && (
+    <section class="container-x max-w-3xl pb-20" aria-labelledby="guides-h">
+      <h2 id="guides-h" class="h2 mb-10">Guides on this topic.</h2>
+      <ul class="divide-y divide-line border-y border-line">
+        {guides.map((g) => (
+          <li class="py-5">
+            <a href={`/blog/${g.id}/`} class="link text-[1.3rem] font-semibold tracking-tight">{g.data.title}</a>
+            <p class="mt-1 text-[1.05rem] leading-snug text-muted">{g.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="container-x pb-20 text-center">
     <h2 class="h2 mx-auto max-w-2xl">Want {data.title.toLowerCase()} done properly?</h2>
     <a href="/contact/" class="btn btn-primary mt-9">Book a consultation</a>
   </section>

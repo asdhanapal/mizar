@@ -1,10 +1,11 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { getPosts } from '../../lib/posts';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getPosts();
   return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
@@ -37,4 +38,15 @@ const url = `https://skandava.com/blog/${entry.id}/`;
     <time datetime={data.pubDate.toISOString()} class="block text-center text-sm text-muted">{data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
     <div class="prose-site mt-6"><Content /></div>
   </article>
+
+  <section class="container-x max-w-3xl py-16">
+    <div class="tile tile-light px-8 py-12">
+      <h2 class="h3">Want this solved for your team?</h2>
+      <p class="sub mx-auto mt-3 max-w-md text-[1.2rem] leading-snug">Tell us what you are dealing with and we will reply with an honest view of the options.</p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+        <a href="/contact/" class="btn btn-primary">Book a consultation</a>
+        {data.related && <a href={data.related.href} class="link text-[1.2rem]">{data.related.label}</a>}
+      </div>
+    </div>
+  </section>
 </Base>

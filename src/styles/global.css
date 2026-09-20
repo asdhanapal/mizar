@@ -6,11 +6,19 @@
   --color-muted: #6e6e73;
   --color-fog: #f5f5f7;
   --color-line: #d2d2d7;
-  --color-blue: #0071e3;
-  --color-link: #0066cc;
+  --color-brand: #227e0d;
+  --color-link: #1c700b;
   --color-night: #000000;
   --color-graphite: #161617;
   --font-sans: 'SF Pro Display', 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Inter Variable', 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  /* Mild colour washes: low-opacity glows in Apple's soft palette */
+  --wash-brand: radial-gradient(55% 60% at 88% 8%, rgb(34 126 13 / .055), transparent 70%), radial-gradient(45% 50% at 4% 92%, rgb(93 212 53 / .04), transparent 70%);
+  --wash-green: radial-gradient(55% 60% at 88% 8%, rgb(34 126 13 / .05), transparent 70%), radial-gradient(45% 50% at 4% 92%, rgb(0 190 200 / .04), transparent 70%);
+  --wash-amber: radial-gradient(55% 60% at 88% 8%, rgb(255 159 10 / .055), transparent 70%), radial-gradient(45% 50% at 4% 92%, rgb(255 55 95 / .03), transparent 70%);
+  --wash-violet: radial-gradient(55% 60% at 88% 8%, rgb(94 92 230 / .06), transparent 70%), radial-gradient(45% 50% at 4% 92%, rgb(191 90 242 / .04), transparent 70%);
 }
 
 @layer base {
@@ -24,15 +32,13 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  html.lenis, html.lenis body { height: auto; }
-  html.lenis { scroll-behavior: auto; }
   body { min-height: 100vh; overflow-x: clip; }
   h1, h2, h3 { font-weight: 600; text-wrap: balance; }
   h1 { letter-spacing: -0.035em; line-height: 1.03; }
   h2, h3 { letter-spacing: -0.028em; line-height: 1.07; }
   p { text-wrap: pretty; }
-  :focus-visible { outline: 3px solid rgb(0 113 227 / .7); outline-offset: 3px; border-radius: 8px; }
-  ::selection { background: rgb(0 113 227 / .25); }
+  :focus-visible { outline: 3px solid rgb(34 126 13 / .7); outline-offset: 3px; border-radius: 8px; }
+  ::selection { background: rgb(34 126 13 / .25); }
 }
 
 @layer components {
@@ -43,14 +49,14 @@
   .lead { font-size: clamp(1.2rem, 2.1vw, 1.55rem); line-height: 1.35; letter-spacing: -0.016em; color: var(--color-muted); }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 980px; padding: .72rem 1.35rem; font-size: 1.0625rem; line-height: 1.2; font-weight: 400; transition: background-color .2s, color .2s; }
-  .btn-primary { background: var(--color-blue); color: #fff; }
-  .btn-primary:hover { background: #0077ed; }
+  .btn-primary { background: var(--color-brand); color: #fff; }
+  .btn-primary:hover { background: #2a9210; }
   .btn-outline { border: 1px solid var(--color-link); color: var(--color-link); }
   .btn-outline:hover { background: var(--color-link); color: #fff; }
   .link { color: var(--color-link); }
   .link::after { content: '\203A'; margin-left: .3em; font-size: 1.15em; }
   .link:hover { text-decoration: underline; }
-  .on-dark .link, .tile-dark .link { color: #2997ff; }
+  .on-dark .link, .tile-dark .link { color: #5dd435; }
 
   .tile { position: relative; overflow: hidden; border-radius: 28px; text-align: center; }
   .tile-dark { background: #000; color: #f5f5f7; --node-fill: #1c1c1e; --node-stroke: #3a3a3c; --sub: #a1a1a6; }
@@ -64,8 +70,7 @@
   .prose-site ul, .prose-site ol { @apply my-4 space-y-2 pl-6; }
   .prose-site ul { list-style: disc; }
   .prose-site ol { list-style: decimal; }
-  .prose-site a { color: var(--color-link); }
-  .prose-site a:hover { text-decoration: underline; }
+  .prose-site a { color: var(--color-link); text-decoration: underline; text-underline-offset: 3px; }
   .prose-site strong { @apply text-ink; }
 }
 
@@ -76,3 +81,22 @@ html.motion [data-reveal].is-in { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* A section with a soft gradient wash behind its content */
+.wash { position: relative; isolation: isolate; }
+.wash::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--wash, var(--wash-brand)); }
+.wash-green { --wash: var(--wash-green); }
+.wash-amber { --wash: var(--wash-amber); }
+.wash-violet { --wash: var(--wash-violet); }
+
+/* Fixed colour layers behind the home page's 3D sections; their opacity follows the scroll */
+.aura { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.aura i { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
+.aura .a0 { background: radial-gradient(55% 50% at 76% 46%, rgb(34 126 13 / .15), transparent 72%), radial-gradient(45% 45% at 10% 88%, rgb(93 212 53 / .09), transparent 72%); }
+.aura .a1 { background: radial-gradient(55% 50% at 76% 46%, rgb(34 126 13 / .12), transparent 72%), radial-gradient(45% 45% at 10% 88%, rgb(0 190 200 / .09), transparent 72%); }
+.aura .a2 { background: radial-gradient(55% 50% at 76% 46%, rgb(255 159 10 / .13), transparent 72%), radial-gradient(45% 45% at 10% 88%, rgb(255 55 95 / .07), transparent 72%); }
+.aura .a3 { background: radial-gradient(55% 50% at 76% 46%, rgb(94 92 230 / .15), transparent 72%), radial-gradient(45% 45% at 10% 88%, rgb(191 90 242 / .09), transparent 72%); }
+html:not(.story-on) #hero { background: var(--wash-brand); }
+
+/* Links inside sentences are underlined so they do not rely on colour alone */
+p a:not(.btn):not(.link) { text-decoration: underline; text-underline-offset: 3px; }

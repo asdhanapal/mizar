@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+
+const tools = [
+  { href: '/tools/whatsapp-link-generator/', name: 'WhatsApp link and QR code generator', text: 'Make a click-to-chat link and a printable QR code with a message already typed for your customer.' },
+  { href: '/tools/utm-link-builder/', name: 'UTM link builder', text: 'Add tracking labels to any link so you can see which post, email or message brings visitors.' },
+  { href: '/tools/build-vs-buy-calculator/', name: 'Build vs buy calculator', text: 'Compare a software subscription with custom software using your own numbers, and see the month they break even.' },
+];
+---
+
+<Base
+  title="Free Tools for Small Business Marketing"
+  description="Free, private tools from Skandava: a WhatsApp link and QR code generator, a UTM link builder and a build vs buy software cost calculator. No sign-up."
+  jsonLd={[{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: tools.map((t, i) => ({ '@type': 'ListItem', position: i + 1, url: `https://skandava.com${t.href}`, name: t.name })) }]}
+>
+  <PageHero title="Free tools." lead="Small, useful tools we built for businesses. They run in your browser, so nothing you type is stored or sent to us." crumbs={[{ label: 'Free tools' }]} />
+  <section class="mx-auto max-w-[1200px] px-3 pb-3">
+    <ul class="grid gap-3 md:grid-cols-2">
+      {tools.map((t, i) => (
+        <li class:list={['tile flex min-h-[18rem] flex-col items-center justify-center px-8 py-12', i % 2 === 0 ? 'tile-dark' : 'tile-light']}>
+          <h2 class="h3"><a href={t.href} class="after:absolute after:inset-0">{t.name}</a></h2>
+          <p class="sub mt-3 max-w-sm text-[1.2rem] leading-snug">{t.text}</p>
+          <span class="link mt-4 text-[1.2rem]" aria-hidden="true">Use the tool</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="container-x py-16 text-center">
+    <p class="lead mx-auto max-w-xl">Need something built for your business? We make software, websites and marketing that work together.</p>
+    <a href="/contact/" class="btn btn-primary mt-8">Book a consultation</a>
+  </section>
+</Base>

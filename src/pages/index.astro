@@ -3,30 +3,55 @@ import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PhoneCall from '../components/art/PhoneCall.astro';
+import Abstract from '../components/Abstract.astro';
 import DashMock from '../components/art/DashMock.astro';
 import SerpMock from '../components/art/SerpMock.astro';
 import CodeWindow from '../components/art/CodeWindow.astro';
 import tileWhatsapp from '../assets/tiles/tile-whatsapp.png';
 import tileCloud from '../assets/tiles/tile-cloud.png';
 import gsquare from '../assets/clients/gsquare-logo.webp';
-import rayala from '../assets/clients/rayala-logo.svg';
+import rayala from '../assets/clients/rayala-logo.webp';
 import seagreen from '../assets/clients/seagreen-logo.jpg';
 import gra from '../assets/clients/gra-logo.png';
 import logonw from '../assets/clients/logonw-logo.webp';
+import omshakthy from '../assets/clients/omshakthy-logo.webp';
 
 const services = await getCollection('services');
 const svcTitle = (id: string) => services.find((s) => s.id === id)?.data.title ?? id;
 
 const showcase = [
-  { key: 'saas', len: 250, Art: DashMock, title: 'SaaS products, built to scale.', text: 'From first version to paying customers. We engineer the dashboard, billing, permissions and infrastructure behind your software.', href: '/services/saas-development/', cta: 'Explore SaaS development' },
-  { key: 'marketing', len: 250, Art: SerpMock, title: 'Marketing that shows up on page one.', text: 'Technical SEO, content and paid campaigns, run by the same engineers who build your site.', href: '/services/seo-digital-marketing/', cta: 'Explore digital marketing' },
-  { key: 'web', len: 250, Art: CodeWindow, title: 'Websites that load fast and get found.', text: 'Modern, accessible sites and web apps built for speed, search and conversion.', href: '/services/web-development/', cta: 'Explore web development' },
-];
-
-const chapters = [
-  { title: 'Detects every call.', text: 'CORE runs quietly on your agents\' Android phones and notices each call the moment it starts. Nobody has to press a thing.' },
-  { title: 'Records it. Stores it safely.', text: 'Audio uploads to your own S3 bucket, and retries automatically when the phone is offline.' },
-  { title: 'Syncs to your CRM.', text: 'Number, agent, duration and recording link land in Salesforce, Zoho, HubSpot or your own system.' },
+  {
+    key: 'saas', len: 260, Art: DashMock, href: '/services/saas-development/', cta: 'Explore SaaS development',
+    chapters: [
+      { title: 'SaaS products, built to scale.', text: 'Start with the smallest version that proves the idea. We define who the product is for, what it must do on day one and what can wait, then give you a clear scope, a fixed estimate and a first version real users can try.' },
+      { title: 'Everything a subscription needs.', text: 'Accounts and permissions, plans and trials, invoices and payments, and dashboards for your customers and your own team. We build them together, so billing, usage and access always agree with each other.' },
+      { title: 'Ready for the day it grows.', text: 'Multi-tenant architecture, clean APIs and integrations, and AWS infrastructure that is monitored, backed up and sized for real traffic. Growth should be good news for your team, not an emergency.' },
+    ],
+  },
+  {
+    key: 'marketing', len: 260, Art: SerpMock, href: '/services/seo-digital-marketing/', cta: 'Explore digital marketing',
+    chapters: [
+      { title: 'Marketing that shows up on page one.', text: 'First we fix what stops Google understanding you: crawling, page speed, structure, structured data and clean URLs. Because engineers do the work, technical problems are solved at the source, not left in a ticket queue.' },
+      { title: 'Publish what customers search for.', text: 'We map real search demand to pages and articles, write for the person asking the question, and build depth on your subject so search engines see you as a serious source, not a one-page brochure.' },
+      { title: 'Measure what brings real leads.', text: 'Search Console, analytics and conversion tracking set up properly, with paid campaigns and WhatsApp follow-ups where they make sense. No one can promise rankings, so we show you the work and the numbers.' },
+    ],
+  },
+  {
+    key: 'web', len: 260, Art: CodeWindow, href: '/services/web-development/', cta: 'Explore web development',
+    chapters: [
+      { title: 'Websites that load fast.', text: 'We build with modern frameworks that send the browser only what it needs, so pages open quickly on ordinary phones and connections. Speed is measured with real tools, and we show you the results.' },
+      { title: 'Found before it is finished.', text: 'Clean structure, semantic markup, structured data, sitemaps and sensible URLs are part of the build, not a final checklist. Search engines can read every page from the first day the site goes live.' },
+      { title: 'Made for people, not just screens.', text: 'Accessible, responsive layouts with readable type and clear calls to action on every device, and code your own team can maintain long after launch.' },
+    ],
+  },
+  {
+    key: 'core', len: 260, Art: PhoneCall, href: '/core/', cta: 'Learn more about CORE',
+    chapters: [
+      { title: 'Detects every call.', text: 'CORE runs quietly on your agents\' Android phones and notices each call the moment it starts. Nobody has to press a thing.' },
+      { title: 'Records it. Stores it safely.', text: 'Audio uploads to your own S3 bucket, and retries automatically when the phone is offline.' },
+      { title: 'Syncs to your CRM.', text: 'Number, agent, duration and recording link land in Salesforce, Zoho, HubSpot or your own system.' },
+    ],
+  },
 ];
 
 const more = [
@@ -42,29 +67,22 @@ const clients = [
   { name: 'Seagreen', logo: seagreen, url: 'https://www.seagreen.in' },
   { name: 'GRA', logo: gra },
   { name: 'LogoNW', logo: logonw },
+  { name: 'Om Shakthy', logo: omshakthy, square: true },
 ];
 ---
 
 <Base
-  title="Skandava: Software Development, AWS & SEO Company"
-  description="Skandava is an engineering-led team building custom software, AWS cloud systems, WhatsApp messaging platforms and SEO that gets you found. Book a free consultation."
-  jsonLd={[{
-    '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
-    name: 'Skandava',
-    url: 'https://skandava.com',
-    description: 'Software development, cloud, SEO and digital marketing services.',
-    serviceType: ['Software development', 'Cloud architecture', 'SEO', 'Digital marketing', 'WhatsApp Business messaging'],
-    parent: { '@id': 'https://skandava.com/#organization' },
-  }]}
+  title="Skandava: Software, Web, CRM and SEO Company in Chennai"
+  description="Skandava is an engineering-led team in Chennai building custom software, SaaS, CRM integrations, websites and SEO for growing businesses. Book a free consultation."
 >
+  <div id="aura" class="aura" aria-hidden="true"><i class="a0"></i><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
   <canvas id="scene" aria-hidden="true" class="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-0 transition-opacity duration-1000"></canvas>
 
   <div id="scene-zone" class="relative z-10">
     <section id="hero" class="flex min-h-[100svh] flex-col items-center px-5 pt-28 text-center sm:pt-36">
       <a href="/core/" class="link text-[1.3rem] font-semibold tracking-tight">New: CORE, the call recorder for sales teams</a>
       <h1 class="h1 mt-4 max-w-4xl">Engineered to grow.</h1>
-      <p class="lead mt-5 max-w-[40rem]">Custom software, cloud infrastructure and search marketing from one engineering team.</p>
+      <p class="lead mt-5 max-w-[40rem]">Custom software, cloud infrastructure and search marketing from one engineering team in Chennai.</p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
         <a href="/contact/" class="btn btn-primary">Book a consultation</a>
         <a href="/services/" class="link text-[1.2rem]">Explore services</a>
@@ -72,48 +90,38 @@ const clients = [
     </section>
 
     <!-- All copy is real HTML. JS only pins each stage and moves the 3D objects. -->
-    {showcase.map((b, i) => (
+    {showcase.map((b) => (
       <section data-svc={b.key} class="svc-block" style={`--len:${b.len}vh`} aria-labelledby={`${b.key}-h`}>
         <div class="svc-sticky">
           <div class="container-x">
-            <div class="svc-text">
-              <h2 id={`${b.key}-h`} class="h2">{b.title}</h2>
-              <p class="lead mt-5 max-w-[26rem]">{b.text}</p>
-              <a href={b.href} class="link mt-6 inline-block text-[1.2rem]">{b.cta}</a>
+            <div class="svc-text chapters">
+              {b.chapters.map((c, i) => (
+                <article data-chapter class="chapter">
+                  {i === 0 ? <h2 id={`${b.key}-h`} class="h2">{c.title}</h2> : <h3 class="h2">{c.title}</h3>}
+                  <p class="lead mt-5 max-w-[27rem]">{c.text}</p>
+                  <a href={b.href} class="link mt-6 inline-block text-[1.2rem]">{b.cta}</a>
+                </article>
+              ))}
             </div>
             <div class="svc-art"><b.Art /></div>
           </div>
         </div>
       </section>
     ))}
-
-    <section data-svc="core" class="svc-block" style="--len:350vh" aria-labelledby="core-h">
-      <div class="svc-sticky">
-        <div class="container-x">
-          <div class="svc-text chapters">
-            {chapters.map((c, i) => (
-              <article data-chapter class="chapter">
-                {i === 0 ? <h2 id="core-h" class="h2">{c.title}</h2> : <h3 class="h2">{c.title}</h3>}
-                <p class="lead mt-5 max-w-[26rem]">{c.text}</p>
-                <a href="/core/" class="link mt-6 inline-block text-[1.2rem]">Learn more about CORE</a>
-              </article>
-            ))}
-          </div>
-          <div class="svc-art"><PhoneCall /></div>
-        </div>
-      </div>
-    </section>
   </div>
 
   <div class="relative z-10 bg-white">
-    <section id="statement" class="container-x py-24 sm:py-32" aria-label="What we believe">
-      <p class="statement mx-auto max-w-4xl">
-        {statement.map((w) => <><span class="word">{w}</span>{' '}</>)}
-      </p>
-    </section>
+    <div class="wash relative overflow-hidden">
+      <Abstract variant="helix" class="inset-x-0 bottom-0 h-56 w-full opacity-40" />
+      <section id="statement" class="container-x py-16 sm:py-24" aria-label="What we believe">
+        <p class="statement mx-auto max-w-4xl">
+          {statement.map((w) => <><span class="word">{w}</span>{' '}</>)}
+        </p>
+      </section>
+    </div>
 
     <section class="mx-auto max-w-[1200px] px-3 pb-3" aria-labelledby="more-h">
-      <h2 id="more-h" class="h2 pb-14 text-center">And the rest of what we build.</h2>
+      <h2 id="more-h" class="h2 pb-10 text-center">And the rest of what we build.</h2>
       <ul class="grid gap-3 md:grid-cols-2">
         {more.map(({ svc, dark, img, alt, width }) => (
           <li class:list={['tile flex min-h-[38rem] flex-col items-center px-6 pt-14 sm:px-10', dark ? 'tile-dark' : 'tile-light']}>
@@ -126,31 +134,34 @@ const clients = [
       </ul>
     </section>
 
-    <section class="bg-fog py-20" aria-labelledby="clients-h">
+    <section class="bg-fog py-14" aria-labelledby="clients-h">
       <div class="container-x">
         <h2 id="clients-h" class="mb-10 text-center text-2xl font-semibold tracking-tight">Trusted by teams at</h2>
-        <ul class="flex flex-wrap items-center justify-center gap-x-14 gap-y-8">
-          {clients.map((c) => (
-            <li class="flex h-14 items-center opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0">
-              {c.url ? (
-                <a href={c.url} rel="noopener" target="_blank" aria-label={c.name}><Image src={c.logo} alt={c.name} height={56} class="h-11 w-auto max-w-[9rem] object-contain mix-blend-multiply" loading="lazy" /></a>
-              ) : (
-                <Image src={c.logo} alt={c.name} height={56} class="h-11 w-auto max-w-[9rem] object-contain mix-blend-multiply" loading="lazy" />
-              )}
-            </li>
-          ))}
+        <ul class="flex flex-wrap items-stretch justify-center gap-3">
+          {clients.map((c) => {
+            const img = <Image src={c.logo} alt={c.name} height={c.square ? 56 : 40} class:list={['w-auto object-contain', c.square ? 'h-14 rounded-lg' : 'h-10 max-w-[8rem]']} loading="lazy" />;
+            return (
+              <li class="flex h-20 items-center justify-center rounded-2xl bg-white px-5 ring-1 ring-black/5">
+                {c.url ? <a href={c.url} rel="noopener" target="_blank" aria-label={c.name}>{img}</a> : img}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
 
-    <section class="container-x py-32 text-center sm:py-44" aria-labelledby="cta-h">
-      <h2 id="cta-h" class="h2 mx-auto max-w-3xl">Tell us what you want to build.</h2>
-      <p class="lead mx-auto mt-5 max-w-xl">We will reply with an honest view of scope, timeline and next steps.</p>
-      <div class="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-        <a href="/contact/" class="btn btn-primary">Book a consultation</a>
-        <a href="/services/" class="link text-[1.2rem]">Explore services</a>
-      </div>
-    </section>
+    <div class="wash wash-violet relative overflow-hidden">
+      <Abstract variant="network" class="-right-40 top-1/2 h-[36rem] w-[36rem] -translate-y-1/2 opacity-40 max-sm:hidden" />
+      <Abstract variant="network" seed={9} class="-left-44 top-1/2 h-[30rem] w-[30rem] -translate-y-1/2 opacity-30 max-sm:hidden" />
+      <section class="container-x py-20 text-center sm:py-28" aria-labelledby="cta-h">
+        <h2 id="cta-h" class="h2 mx-auto max-w-3xl">Tell us what you want to build.</h2>
+        <p class="lead mx-auto mt-5 max-w-xl">We will reply with an honest view of scope, timeline and next steps.</p>
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+          <a href="/contact/" class="btn btn-primary">Book a consultation</a>
+          <a href="/services/" class="link text-[1.2rem]">Explore services</a>
+        </div>
+      </section>
+    </div>
   </div>
 
   <script>
@@ -179,7 +190,8 @@ const clients = [
     grid-area: 1 / 1; padding-block: 0; opacity: 0; transform: translateY(18px);
     transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1);
   }
-  html.story-on .chapters .chapter.is-active { opacity: 1; transform: none; }
+  html.story-on .chapters .chapter { visibility: hidden; transition: opacity .4s ease, transform .4s cubic-bezier(.2,.7,.2,1), visibility 0s .4s; }
+  html.story-on .chapters .chapter.is-active { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
   @media (max-width: 767px) {
     html.story-on .svc-sticky { align-items: flex-start; padding-top: 6.5rem; text-align: center; }
     html.story-on .svc-text { max-width: none; }

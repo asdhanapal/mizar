@@ -1,9 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
+import { getPosts } from '../../lib/posts';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 
-const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = await getPosts();
 ---
 
 <Base title="Blog: Software, SEO & Growth Insights" description="Practical articles on software development, SEO, cloud and customer communication from the Skandava team.">
@@ -14,7 +14,7 @@ const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueO
         <li>
           <a href={`/blog/${p.id}/`} class="group block py-8">
             <time datetime={p.data.pubDate.toISOString()} class="text-sm text-muted">{p.data.pubDate.toLocaleDateString('en-GB', { dateStyle: 'long' })}</time>
-            <h2 class="mt-2 text-[2rem] group-hover:text-link">{p.data.title}</h2>
+            <h2 class="mt-2 text-[2rem] group-hover:text-link">{p.data.title}{p.data.draft && <span class="ml-3 rounded-full bg-fog px-3 py-1 align-middle text-xs font-medium text-muted">Draft</span>}</h2>
             <p class="mt-2 text-[1.1rem] leading-snug text-muted">{p.data.description}</p>
           </a>
         </li>

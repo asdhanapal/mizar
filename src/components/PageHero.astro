@@ -1,9 +1,11 @@
 ---
+import Abstract from './Abstract.astro';
 interface Props { title: string; lead?: string; crumbs?: { label: string; href?: string }[] }
 const { title, lead, crumbs = [] } = Astro.props;
 ---
 
-<section class="pt-32 pb-14 text-center sm:pt-40">
+<section class="wash relative overflow-hidden pt-32 pb-14 text-center sm:pt-40">
+  <Abstract variant="network" class="-right-40 -top-32 h-[34rem] w-[34rem] opacity-40 max-sm:hidden" />
   <div class="container-x">
     {crumbs.length > 0 && (
       <nav aria-label="Breadcrumb" class="mb-5 text-sm text-muted">
