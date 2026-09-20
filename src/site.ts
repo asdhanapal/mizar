@@ -12,6 +12,8 @@ export const site = {
   analytics: { ga4: '', plausibleDomain: '' },
   /** Public profiles (LinkedIn, YouTube, Instagram, Google Business Profile, Clutch...). Added to the structured data. */
   social: [] as string[],
+  /** Search engine ownership tags. Paste the token only if you verify by HTML tag. Verifying by DNS (Search Console "Domain" property) needs none. */
+  verification: { google: '', bing: '' },
   /** Where the business is based. Only the city and region go in the structured data: no street address or postcode is published. */
   location: { neighbourhood: 'Ashok Nagar', locality: 'Chennai', region: 'Tamil Nadu', country: 'IN' },
   /** Places you serve. Empty = left out of the structured data. */

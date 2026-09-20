@@ -45,6 +45,15 @@ for (const [u] of indexable) if (!sitemapUrls.includes(u) && u !== '/404.html') 
 const sm = fs.existsSync(sitemapFile) ? fs.readFileSync(sitemapFile, 'utf8') : '';
 if (sm && !/<lastmod>/.test(sm)) warn('sitemap', 'no lastmod dates');
 
+// ---- vercel.json: every page must have its trailing-slash redirect, and no blanket rule may touch /api
+const vercelFile = new URL('../vercel.json', import.meta.url).pathname;
+if (fs.existsSync(vercelFile)) {
+  const cfg = JSON.parse(fs.readFileSync(vercelFile, 'utf8'));
+  const sources = new Set((cfg.redirects ?? []).map((r) => r.source));
+  for (const u of sitemapUrls) if (u !== '/' && !sources.has(u.slice(0, -1))) warn(u, 'no redirect from the no-slash address in vercel.json (run npm run vercel-config)');
+  if (cfg.trailingSlash === true) err('vercel.json', '"trailingSlash": true would also redirect /api/contact and can break the contact form');
+} else warn('vercel.json', 'missing (run npm run vercel-config)');
+
 // ---- per page
 const titles = new Map();
 const descs = new Map();

@@ -1,0 +1,146 @@
+{
+  "redirects": [
+    {
+      "source": "/works",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/works/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "/about/",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/why-offline-calls-are-invisible-to-your-crm",
+      "destination": "/blog/why-offline-calls-are-invisible-to-your-crm/",
+      "permanent": true
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact/",
+      "permanent": true
+    },
+    {
+      "source": "/core",
+      "destination": "/core/",
+      "permanent": true
+    },
+    {
+      "source": "/partners",
+      "destination": "/partners/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy/",
+      "permanent": true
+    },
+    {
+      "source": "/services",
+      "destination": "/services/",
+      "permanent": true
+    },
+    {
+      "source": "/services/android-app-development",
+      "destination": "/services/android-app-development/",
+      "permanent": true
+    },
+    {
+      "source": "/services/cloud-aws",
+      "destination": "/services/cloud-aws/",
+      "permanent": true
+    },
+    {
+      "source": "/services/crm-integration-development",
+      "destination": "/services/crm-integration-development/",
+      "permanent": true
+    },
+    {
+      "source": "/services/it-services",
+      "destination": "/services/it-services/",
+      "permanent": true
+    },
+    {
+      "source": "/services/saas-development",
+      "destination": "/services/saas-development/",
+      "permanent": true
+    },
+    {
+      "source": "/services/seo-digital-marketing",
+      "destination": "/services/seo-digital-marketing/",
+      "permanent": true
+    },
+    {
+      "source": "/services/web-development",
+      "destination": "/services/web-development/",
+      "permanent": true
+    },
+    {
+      "source": "/services/whatsapp-messaging",
+      "destination": "/services/whatsapp-messaging/",
+      "permanent": true
+    },
+    {
+      "source": "/tools",
+      "destination": "/tools/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/build-vs-buy-calculator",
+      "destination": "/tools/build-vs-buy-calculator/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/utm-link-builder",
+      "destination": "/tools/utm-link-builder/",
+      "permanent": true
+    },
+    {
+      "source": "/tools/whatsapp-link-generator",
+      "destination": "/tools/whatsapp-link-generator/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/(og|logo|favicon|apple-touch-icon).png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    }
+  ]
+}
