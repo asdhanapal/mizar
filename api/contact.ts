@@ -2,21 +2,30 @@
 // change the source, then run "npm run sync:api". Vercel Function, runs automatically on Vercel.
 /**
  * Contact form handler, shared by every host.
- * It only uses web-standard APIs (fetch, Response), so the same code runs on
- * Cloudflare Pages Functions, Vercel, Netlify and Node.
+ * The form itself only uses web-standard APIs (fetch, Response). Mail goes out through SMTP (your own mailbox)
+ * when SMTP_* is set, otherwise through Resend when RESEND_API_KEY is set.
  */
 
 interface MailEnv {
+  /** SMTP (recommended for skandava.com: mail is sent as your own mailbox, so SPF and DMARC pass). */
+  SMTP_HOST?: string;
+  /** 465 (SSL, default) or 587 (STARTTLS). */
+  SMTP_PORT?: string;
+  /** The mailbox that sends, e.g. hariprasad@skandava.com. */
+  SMTP_USER?: string;
+  SMTP_PASS?: string;
+  /** Alternative to SMTP. Only works if Resend's DKIM and SPF records are added for skandava.com. */
   RESEND_API_KEY?: string;
   /** Where messages are delivered. */
   CONTACT_TO?: string;
-  /** Sender shown to you, on a domain verified in Resend, e.g. "Skandava Website <website@skandava.com>". */
+  /** Sender shown to you. With SMTP it must be the mailbox (or an alias of it). Defaults to SMTP_USER. */
   CONTACT_FROM?: string;
 }
 
 const DEFAULT_TO = 'hariprasad@skandava.com';
 
 interface Payload { name: string; email: string; phone: string; message: string }
+interface Mail { from: string; to: string; replyTo: string; subject: string; text: string; html: string }
 
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
@@ -36,6 +45,31 @@ function validate(raw: unknown): { ok: true; data: Payload } | { ok: false; erro
   return { ok: true, data };
 }
 
+/** Sends through your own mailbox. The package is loaded only here, so hosts that never use SMTP do not need it. */
+async function sendViaSmtp(env: MailEnv, mail: Mail) {
+  const nodemailer = (await import('nodemailer')).default;
+  const port = Number(env.SMTP_PORT) || 465;
+  const transport = nodemailer.createTransport({
+    host: env.SMTP_HOST,
+    port,
+    secure: port === 465,
+    auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 8000,
+  });
+  await transport.sendMail(mail);
+}
+
+async function sendViaResend(env: MailEnv, mail: Mail) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: mail.from, to: [mail.to], reply_to: mail.replyTo, subject: mail.subject, text: mail.text, html: mail.html }),
+  });
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+}
+
 async function handleContact(request: Request, env: MailEnv): Promise<Response> {
   if (request.method !== 'POST') return json(405, { ok: false, error: 'Method not allowed.' });
 
@@ -50,34 +84,33 @@ async function handleContact(request: Request, env: MailEnv): Promise<Response> 
   if (!parsed.ok) return json(400, { ok: false, error: parsed.error });
   const { name, email, phone, message } = parsed.data;
 
-  if (!env.RESEND_API_KEY) {
-    console.error('[contact] RESEND_API_KEY is not set');
+  const useSmtp = Boolean(env.SMTP_HOST && env.SMTP_USER && env.SMTP_PASS);
+  if (!useSmtp && !env.RESEND_API_KEY) {
+    console.error('[contact] no mail provider configured: set SMTP_HOST, SMTP_USER and SMTP_PASS (or RESEND_API_KEY)');
     return json(500, { ok: false, error: 'Email is not configured yet.' });
   }
 
   const to = env.CONTACT_TO || DEFAULT_TO;
-  const from = env.CONTACT_FROM || 'Skandava Website <onboarding@resend.dev>';
-  const subject = `New enquiry from ${oneLine(name)}`;
-  const text = `Name: ${name}\nEmail: ${email}\nPhone: ${phone || '-'}\n\n${message}`;
+  const from = env.CONTACT_FROM || (useSmtp ? env.SMTP_USER! : 'Skandava Website <onboarding@resend.dev>');
   const html = `<div style="font-family:-apple-system,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.55;color:#1d1d1f">
     <p><strong>New enquiry from the Skandava website</strong></p>
     <p><strong>Name:</strong> ${escapeHtml(name)}<br><strong>Email:</strong> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a><br><strong>Phone:</strong> ${escapeHtml(phone || '-')}</p>
     <p style="white-space:pre-wrap;border-left:3px solid #d2d2d7;padding-left:12px">${escapeHtml(message)}</p>
   </div>`;
+  const mail: Mail = {
+    from,
+    to,
+    replyTo: email,
+    subject: `New enquiry from ${oneLine(name)}`,
+    text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || '-'}\n\n${message}`,
+    html,
+  };
 
   try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from, to: [to], reply_to: email, subject, text, html }),
-    });
-    if (!res.ok) {
-      console.error('[contact] Resend error', res.status, await res.text());
-      return json(502, { ok: false, error: 'We could not send your message right now.' });
-    }
+    await (useSmtp ? sendViaSmtp(env, mail) : sendViaResend(env, mail));
     return json(200, { ok: true });
   } catch (err) {
-    console.error('[contact] network error', err);
+    console.error('[contact] send failed', err);
     return json(502, { ok: false, error: 'We could not send your message right now.' });
   }
 }

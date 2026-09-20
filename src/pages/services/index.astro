@@ -12,7 +12,7 @@ const services = (await getCollection('services')).sort((a, b) => a.data.order -
   jsonLd={[{
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: `https://skandava.com/services/${s.id}/`, name: s.data.title })),
+    itemListElement: services.map((s, i) => ({ '@type': 'ListItem', position: i + 1, url: `https://www.skandava.com/services/${s.id}/`, name: s.data.title })),
   }]}
 >
   <PageHero title="Engineering and marketing under one roof." lead="Pick one service or combine them. Each is delivered by the engineers who will still be around after launch." crumbs={[{ label: 'Services' }]} />

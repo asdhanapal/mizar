@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { data } = entry;
 const { Content } = await render(entry);
-const url = `https://skandava.com/blog/${entry.id}/`;
+const url = `https://www.skandava.com/blog/${entry.id}/`;
 ---
 
 <Base
@@ -29,8 +29,8 @@ const url = `https://skandava.com/blog/${entry.id}/`;
     datePublished: data.pubDate.toISOString(),
     dateModified: (data.updatedDate ?? data.pubDate).toISOString(),
     mainEntityOfPage: url,
-    author: { '@id': 'https://skandava.com/#organization' },
-    publisher: { '@id': 'https://skandava.com/#organization' },
+    author: { '@id': 'https://www.skandava.com/#organization' },
+    publisher: { '@id': 'https://www.skandava.com/#organization' },
   }]}
 >
   <PageHero title={data.title} lead={data.description} crumbs={[{ label: 'Blog', href: '/blog/' }, { label: data.title }]} />

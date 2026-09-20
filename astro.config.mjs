@@ -37,7 +37,7 @@ const devContactApi = {
 const cacheDir = process.argv.includes('dev') ? 'node_modules/.vite-dev' : 'node_modules/.vite-build';
 
 export default defineConfig({
-  site: 'https://skandava.com',
+  site: 'https://www.skandava.com',
   trailingSlash: 'always',
   build: { format: 'directory' },
   integrations: [

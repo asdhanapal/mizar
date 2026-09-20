@@ -1,6 +1,6 @@
 export const site = {
   name: 'Skandava',
-  url: 'https://skandava.com',
+  url: 'https://www.skandava.com',
   tagline: 'Software engineering and digital marketing that grows your business.',
   description:
     'Skandava is an engineering-led team building custom software, AWS cloud systems, WhatsApp messaging platforms and SEO-driven marketing for growing businesses.',

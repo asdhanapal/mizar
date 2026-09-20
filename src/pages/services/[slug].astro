@@ -34,7 +34,7 @@ const { entry } = Astro.props;
 const { data } = entry;
 const { dark, Art } = look[entry.id] ?? { dark: false, Art: PhoneCall };
 const { Content } = await render(entry);
-const url = `https://skandava.com/services/${entry.id}/`;
+const url = `https://www.skandava.com/services/${entry.id}/`;
 
 // Every article that says it belongs to this service is linked here automatically, so new posts never start as orphans.
 const guides = (await getPosts()).filter((p) => p.data.related?.href === `/services/${entry.id}/`);
@@ -48,15 +48,15 @@ const jsonLd = [
     serviceType: data.title,
     description: data.description,
     url,
-    provider: { '@id': 'https://skandava.com/#organization' },
+    provider: { '@id': 'https://www.skandava.com/#organization' },
     ...(site.areaServed.length ? { areaServed: site.areaServed } : {}),
   },
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://skandava.com/' },
-      { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://skandava.com/services/' },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.skandava.com/' },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://www.skandava.com/services/' },
       { '@type': 'ListItem', position: 3, name: data.title, item: url },
     ],
   },

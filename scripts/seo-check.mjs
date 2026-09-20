@@ -6,7 +6,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const DIST = new URL('../dist/', import.meta.url).pathname;
-const ORIGIN = 'https://skandava.com';
+const ORIGIN = 'https://www.skandava.com';
 
 const errors = [];
 const warnings = [];
@@ -84,6 +84,11 @@ for (const [url, html] of indexable) {
   if (canonical !== ORIGIN + url) err(url, `canonical is ${canonical}, expected ${ORIGIN + url}`);
 
   for (const img of html.match(/<img\b[^>]*>/g) ?? []) if (!/\balt=/.test(img)) err(url, `image without alt: ${img.slice(0, 80)}`);
+
+  // one host everywhere: a page that mixes skandava.com and www.skandava.com sends Google two answers
+  const originHost = new URL(ORIGIN).host;
+  const otherHosts = new Set([...html.matchAll(/https?:\/\/((?:www\.)?skandava\.com)(?=[\/"'\\<\s?#])/g)].map((m) => m[1]).filter((h) => h !== originHost));
+  if (otherHosts.size) err(url, `links to ${[...otherHosts].join(', ')} but the canonical host is ${originHost}`);
 
   // structured data: parses, and every bare {"@id"} reference points at something defined on the page
   const blocks = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
