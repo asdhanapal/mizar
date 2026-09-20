@@ -1,12 +1,11 @@
 ---
 title: "8 Questions to Ask Before Hiring a Software Company"
 description: "Before you sign a software development contract, ask these eight questions. Each comes with what a good answer sounds like and which answers are warning signs."
-pubDate: 2026-09-28
+pubDate: 2026-09-20
 tags: [software, hiring, SaaS]
 related:
   href: /services/saas-development/
   label: See our SaaS development service
-draft: true
 ---
 
 Hiring a software company is one of the biggest decisions a growing business makes, and it is hard to judge from a sales presentation. These eight questions cut through the pitch. For each one you will see what a good answer sounds like and what should make you pause.

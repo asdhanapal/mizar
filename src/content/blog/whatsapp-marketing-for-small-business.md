@@ -1,12 +1,11 @@
 ---
 title: "WhatsApp Marketing for Small Business, Without Bans"
 description: "How to send offers and updates on WhatsApp the right way: permission, approved templates and the official platform, so your number stays safe."
-pubDate: 2026-09-23
+pubDate: 2026-09-20
 tags: [WhatsApp, marketing, small business]
 related:
   href: /services/whatsapp-messaging/
   label: See our WhatsApp business messaging service
-draft: true
 ---
 
 Your customers already use WhatsApp every day, so it is natural to want to send them offers, reminders and updates there. But businesses that send messages carelessly often lose their number. Here is how to use WhatsApp for marketing in a way that works and keeps your account safe.

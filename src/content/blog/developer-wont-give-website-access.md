@@ -1,12 +1,11 @@
 ---
-title: "Your Web Developer Will Not Give You Access? How to Get Control Back"
+title: "Web Developer Won't Give You Access? How to Get Control Back"
 description: "Your developer has gone quiet or refuses to hand over logins. Here is what to check first, what to ask for in writing, and how to avoid it next time."
-pubDate: 2026-09-27
+pubDate: 2026-09-20
 tags: [website, ownership, hosting]
 related:
   href: /services/web-development/
   label: See our web development service
-draft: true
 ---
 
 You paid for a website, and now the person who built it has stopped replying, or will not give you the logins. This is more common than it should be, and it is stressful because your business depends on the site. Here is a calm way to work through it.

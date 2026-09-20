@@ -1,15 +1,14 @@
 ---
 title: "Why Is My Website Not Showing on Google? 7 Reasons"
 description: "Your site is live but nobody finds it on Google. Here are the seven most common reasons in plain language, and how to check each one yourself."
-pubDate: 2026-09-22
+pubDate: 2026-09-20
 tags: [SEO, website, Google]
 related:
   href: /services/seo-digital-marketing/
   label: See our SEO and digital marketing service
-draft: true
 ---
 
-You built a website, it is live, and when you search for your business on Google it is nowhere to be found. This is one of the most common frustrations for business owners, and it usually has a simple cause. Here are the seven reasons we see most often, in plain language, with a way to check each one.
+You built a website, it is live, and when you search for your business on Google it is nowhere to be found. This is one of the most common frustrations for business owners, and it usually has a simple cause. Here are the seven most common reasons, in plain language, with a way to check each one.
 
 ## 1. Google does not know your site exists yet
 

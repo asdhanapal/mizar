@@ -1,12 +1,11 @@
 ---
 title: "Website, Web App or Mobile App: Which Do You Need?"
 description: "Not sure whether your business needs a website, a web app or a mobile app? This plain guide explains the difference and how to choose."
-pubDate: 2026-09-25
+pubDate: 2026-09-20
 tags: [website, web app, mobile app]
 related:
   href: /services/web-development/
   label: See our web development service
-draft: true
 ---
 
 Many owners ask for "an app" when what they need is a website, and the other way round. Choosing the wrong one costs time and money. Here is the difference in plain language.

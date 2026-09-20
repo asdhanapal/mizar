@@ -1,12 +1,11 @@
 ---
 title: "What Is SaaS? A Plain-English Guide for Owners"
 description: "SaaS means software you use online for a monthly or yearly fee. Here is how it works, when to buy it and when to build your own."
-pubDate: 2026-09-24
+pubDate: 2026-09-20
 tags: [SaaS, software, business]
 related:
   href: /services/saas-development/
   label: See our SaaS development service
-draft: true
 ---
 
 SaaS sounds technical, but you almost certainly use it already. This guide explains what it means, why it matters for your business, and when it makes sense to build your own.

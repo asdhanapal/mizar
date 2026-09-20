@@ -21,6 +21,36 @@
       "permanent": true
     },
     {
+      "source": "/blog/developer-wont-give-website-access",
+      "destination": "/blog/developer-wont-give-website-access/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/questions-to-ask-before-hiring-a-software-company",
+      "destination": "/blog/questions-to-ask-before-hiring-a-software-company/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/website-web-app-or-mobile-app",
+      "destination": "/blog/website-web-app-or-mobile-app/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/what-is-saas-plain-english-guide",
+      "destination": "/blog/what-is-saas-plain-english-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/whatsapp-marketing-for-small-business",
+      "destination": "/blog/whatsapp-marketing-for-small-business/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/why-is-my-website-not-showing-on-google",
+      "destination": "/blog/why-is-my-website-not-showing-on-google/",
+      "permanent": true
+    },
+    {
       "source": "/blog/why-offline-calls-are-invisible-to-your-crm",
       "destination": "/blog/why-offline-calls-are-invisible-to-your-crm/",
       "permanent": true

@@ -120,6 +120,7 @@ function writeReport(results) {
     '- Homepage only. A site can be fast on its homepage and slow elsewhere.',
     '- "Chrome user data" is what real visitors experience, and exists only for sites with enough traffic.',
     '- LCP = time to the main content, TBT = time the page is unresponsive, CLS = layout jump. Good is roughly LCP under 2.5 s, TBT under 200 ms, CLS under 0.1.',
+    ...(ok.some((r) => r.runs > 1) ? [`- Measured with more than one run (median kept): ${ok.filter((r) => r.runs > 1).map((r) => `${host(r.url)} (${r.runs} runs, ${r.measuredAt.slice(0, 10)})`).join(', ')}.`] : []),
     '- Publish the method, link the source, and offer any site a right of reply. Do not attribute intent.',
     ...(failed.length ? ['', '## Not measured', ...failed.map((r) => `- ${host(r.url)}: ${r.error}`)] : []),
     '',
