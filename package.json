@@ -14,7 +14,8 @@
     "seo:check": "node scripts/seo-check.mjs",
     "gindex": "node scripts/google-index.mjs",
     "speed-study": "node scripts/speed-study.mjs",
-    "vercel-config": "node scripts/vercel-config.mjs"
+    "vercel-config": "node scripts/vercel-config.mjs",
+    "sync:api": "node scripts/sync-vercel-function.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",

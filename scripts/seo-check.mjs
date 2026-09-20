@@ -3,6 +3,7 @@
 // Errors = things that hurt indexing. Warnings = things worth a look.
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const DIST = new URL('../dist/', import.meta.url).pathname;
 const ORIGIN = 'https://skandava.com';
@@ -53,6 +54,13 @@ if (fs.existsSync(vercelFile)) {
   for (const u of sitemapUrls) if (u !== '/' && !sources.has(u.slice(0, -1))) warn(u, 'no redirect from the no-slash address in vercel.json (run npm run vercel-config)');
   if (cfg.trailingSlash === true) err('vercel.json', '"trailingSlash": true would also redirect /api/contact and can break the contact form');
 } else warn('vercel.json', 'missing (run npm run vercel-config)');
+
+// ---- the Vercel contact function must match its source (a stale or import-based copy crashes on every request)
+try {
+  execFileSync('node', [new URL('./sync-vercel-function.mjs', import.meta.url).pathname, '--check'], { stdio: 'pipe' });
+} catch {
+  err('api/contact.ts', 'out of date with src/server/contact.ts (run npm run sync:api). The contact form would fail on Vercel.');
+}
 
 // ---- per page
 const titles = new Map();
