@@ -1,6 +1,6 @@
 ---
 title: CRM Integration and Development
-seoTitle: "CRM Integration and Custom CRM Development"
+seoTitle: "CRM Integration and Development in Chennai"
 description: "We connect your website, WhatsApp and phone calls to Salesforce, Zoho, HubSpot or your own CRM, and build tailored CRM modules. Based in Chennai."
 summary: "Connect your website, WhatsApp and calls to your CRM, and build the dashboards and modules it is missing."
 answer: "CRM integration connects your website, WhatsApp and phone calls to your CRM so leads and activity are recorded automatically. Skandava integrates Salesforce, Zoho, HubSpot or your own system, and builds tailored dashboards and modules."
@@ -35,6 +35,10 @@ Most CRMs are half empty. Calls happen on personal phones, leads arrive on Whats
 - Call logging and recordings attached to the right customer (our CORE app does this for Android phones)
 - Two-way sync, so changes in one place appear in the other
 - Custom reports and dashboards for managers
+
+## CRM integration in Ashok Nagar, Chennai
+
+Skandava is based in Ashok Nagar, Chennai. Tell us which CRM you use, or which one you are considering, on the [contact page](/contact/) and we will reply with an honest view of what to connect first.
 
 ## How we work
 

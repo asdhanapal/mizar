@@ -1,7 +1,7 @@
 ---
 title: SaaS Development
-seoTitle: "SaaS Development: Build, Launch and Scale Products"
-description: "We design and build SaaS products end to end in Chennai, from dashboards and subscription billing to multi-tenant architecture, APIs and AWS."
+seoTitle: "SaaS Development in Chennai: Build, Launch and Scale"
+description: "Based in Ashok Nagar, Chennai, we design and build SaaS products end to end: dashboards, subscription billing, multi-tenant architecture, APIs and AWS."
 summary: "Dashboards, billing, permissions and infrastructure, built as one product that is ready to scale."
 answer: "SaaS development is building software that customers use online for a subscription. Skandava designs and builds the product end to end: dashboards, accounts and permissions, subscription billing, APIs and the AWS infrastructure behind it, starting with the smallest version that proves your idea."
 order: 1
@@ -30,6 +30,10 @@ faq:
 ## From idea to paying customers
 
 A SaaS product is more than screens. It is accounts, permissions, billing, reporting and an infrastructure that stays up. We build all of it as one coherent system so you are not stitching parts together later.
+
+## SaaS development in Ashok Nagar, Chennai
+
+Skandava is based in Ashok Nagar, Chennai. If you are building a SaaS product, or want a second opinion on one you already run, tell us about it on the [contact page](/contact/) and we will reply with an honest view of scope, timeline and next steps.
 
 ## How we work
 

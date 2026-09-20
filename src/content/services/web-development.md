@@ -1,6 +1,6 @@
 ---
 title: Web Development
-seoTitle: "Web Development: Fast, SEO-Ready Websites and Apps"
+seoTitle: "Website Development in Chennai: Fast, SEO-Ready Sites"
 description: "Fast, accessible, SEO-ready websites and web applications from senior engineers in Chennai. Modern frameworks, clean code and performance that helps you rank."
 summary: "Fast, accessible websites and web apps, built to rank and convert."
 answer: "Web development is building websites and web apps. Skandava builds fast, accessible, search-friendly sites with modern frameworks and measures their speed with real tools, so you can see the results."
@@ -26,6 +26,10 @@ faq:
 ## Websites that do their job
 
 A website has to load fast, work everywhere and be easy for Google to understand. We build with modern frameworks that send the browser only what it needs, and we treat accessibility and search as part of the build, not a final checklist.
+
+## Website development in Ashok Nagar, Chennai
+
+Skandava is based in Ashok Nagar, Chennai. Tell us what your website needs to do on the [contact page](/contact/) and we will reply with an honest view of scope and timeline.
 
 ## What we care about
 
