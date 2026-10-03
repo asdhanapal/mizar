@@ -81,6 +81,11 @@
       "permanent": true
     },
     {
+      "source": "/services/ai-agents-automation",
+      "destination": "/services/ai-agents-automation/",
+      "permanent": true
+    },
+    {
       "source": "/services/android-app-development",
       "destination": "/services/android-app-development/",
       "permanent": true

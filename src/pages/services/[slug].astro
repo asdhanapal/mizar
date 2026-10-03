@@ -7,6 +7,7 @@ import SerpMock from '../../components/art/SerpMock.astro';
 import CodeWindow from '../../components/art/CodeWindow.astro';
 import ArchDiagram from '../../components/art/ArchDiagram.astro';
 import DashMock from '../../components/art/DashMock.astro';
+import AgentMock from '../../components/art/AgentMock.astro';
 import Abstract from '../../components/Abstract.astro';
 import { getPosts } from '../../lib/posts';
 import { site } from '../../site';
@@ -17,6 +18,7 @@ export async function getStaticPaths() {
 }
 
 const look: Record<string, { dark: boolean; Art: any }> = {
+  'ai-agents-automation': { dark: false, Art: AgentMock },
   'saas-development': { dark: false, Art: DashMock },
   'seo-digital-marketing': { dark: false, Art: SerpMock },
   'web-development': { dark: true, Art: CodeWindow },
@@ -27,8 +29,8 @@ const look: Record<string, { dark: boolean; Art: any }> = {
   'it-services': { dark: false, Art: ArchDiagram },
 };
 
-const washes: Record<string, string> = { 'saas-development': '', 'seo-digital-marketing': 'wash-green', 'web-development': 'wash-amber', 'whatsapp-messaging': 'wash-green', 'cloud-aws': '', 'crm-integration-development': '', 'android-app-development': 'wash-green', 'it-services': 'wash-amber' };
-const kinds: Record<string, string> = { 'saas-development': 'saas', 'seo-digital-marketing': 'cards', 'web-development': 'laptop', 'whatsapp-messaging': 'chat', 'cloud-aws': 'stack', 'crm-integration-development': 'saas', 'android-app-development': 'chat', 'it-services': 'stack' };
+const washes: Record<string, string> = { 'ai-agents-automation': 'wash-violet', 'saas-development': '', 'seo-digital-marketing': 'wash-green', 'web-development': 'wash-amber', 'whatsapp-messaging': 'wash-green', 'cloud-aws': '', 'crm-integration-development': '', 'android-app-development': 'wash-green', 'it-services': 'wash-amber' };
+const kinds: Record<string, string> = { 'ai-agents-automation': 'agent', 'saas-development': 'saas', 'seo-digital-marketing': 'cards', 'web-development': 'laptop', 'whatsapp-messaging': 'chat', 'cloud-aws': 'stack', 'crm-integration-development': 'saas', 'android-app-development': 'chat', 'it-services': 'stack' };
 
 const { entry } = Astro.props;
 const { data } = entry;
@@ -68,9 +70,14 @@ const jsonLd = [
 
 <Base title={data.seoTitle} description={data.description} jsonLd={jsonLd}>
   <script is:inline slot="head">
+    // Same rule as the home page. ?3d=on forces the scene, ?3d=off forces the light layout (testing only).
     try {
       var c = document.createElement('canvas');
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && (navigator.hardwareConcurrency || 8) > 2 && !(navigator.connection && navigator.connection.saveData) && !(matchMedia('(pointer: coarse)').matches && ((navigator.deviceMemory || 8) <= 4 || (navigator.hardwareConcurrency || 8) <= 4)) && (c.getContext('webgl2') || c.getContext('webgl'))) document.documentElement.classList.add('svc-on');
+      var gl = !!(c.getContext('webgl2') || c.getContext('webgl'));
+      var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var modest = (navigator.connection && navigator.connection.saveData) || (navigator.hardwareConcurrency || 8) <= 2 || (matchMedia('(pointer: coarse)').matches && ((navigator.deviceMemory || 8) <= 4 || (navigator.hardwareConcurrency || 8) <= 4));
+      var force = (/[?&]3d=(on|off)\b/.exec(location.search) || [])[1];
+      if (gl && !reduce && (force === 'on' || (force !== 'off' && !modest))) document.documentElement.classList.add('svc-on');
     } catch (e) {}
   </script>
 

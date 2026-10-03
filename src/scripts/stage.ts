@@ -2,6 +2,7 @@ import {
   ACESFilmicToneMapping,
   BufferGeometry,
   CanvasTexture,
+  CylinderGeometry,
   DirectionalLight,
   ExtrudeGeometry,
   Group,
@@ -12,6 +13,7 @@ import {
   PlaneGeometry,
   PMREMGenerator,
   Scene,
+  SphereGeometry,
   BufferAttribute,
   Color,
   LineBasicMaterial,
@@ -25,7 +27,7 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeom
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { baseScreen, buildPhone, clamp01, easeOutCubic, lerp, roundedShape, rr, screenGeometry, smooth, text } from './scene';
 
-export type Kind = 'laptop' | 'cards' | 'stack' | 'chat' | 'saas';
+export type Kind = 'laptop' | 'cards' | 'stack' | 'chat' | 'saas' | 'agent';
 
 export interface Stage {
   setProgress(p: number): void;
@@ -508,6 +510,109 @@ export function buildSaas(c: Ctx): Built {
 
 
 // ============================================================================
+// Agent (AI agents & process automation): a glowing core, built as a real
+// physical object (like the laptop, cards and phone) rather than a flat screen,
+// built as real parts, like the laptop or the phone elsewhere, not a screen or a diagram.
+// ============================================================================
+export function buildAgent(c: Ctx): Built {
+  const root = new Group();
+  const hub = new Group();
+  hub.position.y = 0.3;
+  hub.scale.setScalar(1.45); // the head itself is bigger; the background network below keeps its own, unscaled size
+  root.add(hub);
+
+  // A small robot head: a smooth dome, a two-tone jaw plate, a dark visor with a brow trim, and a neck
+  // collar with rivets, like EVE or Amazon Astro, not a cube with two dots glued on. No cards, no screen:
+  // the head itself is the whole object, so it carries more built-in detail than before.
+  const shell = mat(c, new MeshPhysicalMaterial({ color: '#f1f3f6', metalness: 0.22, roughness: 0.26, clearcoat: 0.55, clearcoatRoughness: 0.15 }));
+  const trim = mat(c, new MeshPhysicalMaterial({ color: '#c9cace', metalness: 0.85, roughness: 0.3, clearcoat: 0.25 }));
+  const jawShell = mat(c, new MeshPhysicalMaterial({ color: '#dde2e8', metalness: 0.25, roughness: 0.3, clearcoat: 0.4 }));
+  const glow = mat(c, new MeshBasicMaterial({ color: '#227e0d', toneMapped: false }));
+
+  const head = new Group();
+  hub.add(head);
+  const skull = new Mesh(geo(c, new SphereGeometry(0.95, 48, 36)), shell);
+  skull.scale.set(1, 1.04, 0.92); // taller and slightly flatter front-to-back, so it reads as a head, not a ball
+  head.add(skull);
+
+  // A second, two-tone plate across the lower face, like a visor housing bolted onto the skull.
+  const jawGeo = geo(c, new SphereGeometry(0.88, 40, 30));
+  jawGeo.scale(1, 0.56, 0.86);
+  const jaw = new Mesh(jawGeo, jawShell);
+  jaw.position.set(0, -0.32, 0.12);
+  head.add(jaw);
+
+  // A dark glass visor set into the jaw plate: the one detail that makes this read as a robot's face.
+  const visorGeo = geo(c, new SphereGeometry(1, 32, 20));
+  visorGeo.scale(0.62, 0.27, 0.12);
+  const visor = new Mesh(visorGeo, mat(c, new MeshPhysicalMaterial({ color: '#17181c', metalness: 0.35, roughness: 0.18, clearcoat: 0.75, clearcoatRoughness: 0.08 })));
+  visor.position.set(0, 0.02, 0.92);
+  head.add(visor);
+
+  // A thin metal brow trim above the visor.
+  const browGeo = geo(c, new SphereGeometry(1, 28, 10));
+  browGeo.scale(0.66, 0.05, 0.14);
+  const brow = new Mesh(browGeo, trim);
+  brow.position.set(0, 0.24, 0.9);
+  head.add(brow);
+
+  // Eyes: bright, unlit "LEDs" set into the visor, so they actually glow instead of just looking like shaded marbles.
+  const eyeGeo = geo(c, new SphereGeometry(0.12, 20, 20));
+  eyeGeo.scale(1, 1, 0.5);
+  const eyeL = new Mesh(eyeGeo, glow);
+  eyeL.position.set(-0.33, 0.03, 1.0);
+  head.add(eyeL);
+  const eyeR = new Mesh(eyeGeo, glow);
+  eyeR.position.set(0.33, 0.03, 1.0);
+  head.add(eyeR);
+
+  const rod = new Mesh(geo(c, new CylinderGeometry(0.025, 0.035, 0.42, 10)), trim);
+  rod.position.set(0, 1.03, 0);
+  head.add(rod);
+  const tip = new Mesh(geo(c, new SphereGeometry(0.1, 18, 18)), glow);
+  tip.position.set(0, 1.26, 0);
+  head.add(tip);
+
+  const earGeo = geo(c, new SphereGeometry(0.25, 20, 20));
+  earGeo.scale(0.32, 1, 1);
+  const earL = new Mesh(earGeo, shell);
+  earL.position.set(-0.96, 0, 0);
+  head.add(earL);
+  const earR = new Mesh(earGeo, shell);
+  earR.position.set(0.96, 0, 0);
+  head.add(earR);
+
+  // A neck collar, so it reads as a head built to sit on something, not a ball cut off at random, with
+  // three small rivets for the kind of detail a real enclosure would actually have.
+  const collar = new Mesh(geo(c, new CylinderGeometry(0.52, 0.58, 0.22, 28)), trim);
+  collar.position.set(0, -0.95, 0);
+  head.add(collar);
+  const boltGeo = geo(c, new SphereGeometry(0.045, 12, 12));
+  [-0.4, 0, 0.4].forEach((x) => {
+    const bolt = new Mesh(boltGeo, trim);
+    bolt.position.set(x, -0.95, 0.56);
+    head.add(bolt);
+  });
+
+  return {
+    root,
+    update(a, t) {
+      const sa = smooth(a);
+      // Starts tilted down as if reading, rises to look forward once it has decided, with a gentle idle sway.
+      head.rotation.x = lerp(0.22, -0.08, sa);
+      head.rotation.y = lerp(-0.32, 0.26, sa) + Math.sin(t * 0.6) * 0.04;
+      const pulse = 1 + Math.sin(t * 1.8) * 0.07;
+      eyeL.scale.setScalar(pulse);
+      eyeR.scale.setScalar(pulse);
+      tip.scale.setScalar(1 + Math.sin(t * 2.6) * 0.14);
+    },
+    wide: { x: 2.9, y: 0.1, s: 0.72 },
+    narrow: { x: 0, y: -1.4, s: 0.48 },
+    still: { x: 0, y: 0, s: 0.95, p: 1 },
+  };
+}
+
+// ============================================================================
 // Abstract network: a neural net, a DNA helix or a node mesh behind each object
 // ============================================================================
 type V3 = [number, number, number];
@@ -521,6 +626,7 @@ export const NETS: Record<string, NetStyle> = {
   core: { kind: 'mesh', color: '#7a6cf0', seed: 11 },
   chat: { kind: 'mesh', color: '#2a9d4f', seed: 13 },
   stack: { kind: 'neural', color: '#227e0d', seed: 17 },
+  agent: { kind: 'neural', color: '#227e0d', seed: 19 },
 };
 
 function rng(seed: number) {
@@ -652,7 +758,7 @@ export function makeNetwork(c: Ctx, style: NetStyle, opts: { scale?: number; z?:
   return { group, update, setColor };
 }
 
-const builders: Record<Kind, (c: Ctx) => Built> = { laptop: buildLaptop, cards: buildCards, stack: buildStack, chat: buildChat, saas: buildSaas };
+const builders: Record<Kind, (c: Ctx) => Built> = { laptop: buildLaptop, cards: buildCards, stack: buildStack, chat: buildChat, saas: buildSaas, agent: buildAgent };
 
 // ============================================================================
 export function makeCtx(renderer: WebGLRenderer): Ctx {

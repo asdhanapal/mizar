@@ -21,6 +21,7 @@ export const site = {
   locale: 'en_IN',
   nav: [
     { label: 'Services', href: '/services/' },
+    { label: 'AI Agents', href: '/services/ai-agents-automation/' },
     { label: 'CORE', href: '/core/' },
     { label: 'About', href: '/about/' },
     { label: 'Blog', href: '/blog/' },

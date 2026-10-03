@@ -6,7 +6,43 @@ const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).
 const nav = navigator as Navigator & { deviceMemory?: number };
 const coarse = matchMedia('(pointer: coarse)').matches;
 // Data-saver, very few cores, or a modest phone: keep the light layout instead of the 3D scene.
-const lowPower = Boolean(conn?.saveData) || (nav.hardwareConcurrency ?? 8) <= 2 || (coarse && ((nav.deviceMemory ?? 8) <= 4 || (nav.hardwareConcurrency ?? 8) <= 4));
+const modest = Boolean(conn?.saveData) || (nav.hardwareConcurrency ?? 8) <= 2 || (coarse && ((nav.deviceMemory ?? 8) <= 4 || (nav.hardwareConcurrency ?? 8) <= 4));
+
+// Testing switches, not linked anywhere: ?3d=on forces the scene, ?3d=off forces the light layout,
+// ?debug3d prints why this device gets what it gets. Reduced-motion is always respected.
+const query = new URLSearchParams(location.search);
+const force = query.get('3d');
+const lowPower = force === 'on' ? false : force === 'off' ? true : modest;
+
+function showDebug() {
+  let webgl = false;
+  try {
+    const c = document.createElement('canvas');
+    webgl = Boolean(c.getContext('webgl2') || c.getContext('webgl'));
+  } catch {}
+  const blockers = [
+    reduce && 'reduce-motion is on',
+    conn?.saveData && 'data saver is on',
+    (nav.hardwareConcurrency ?? 8) <= 2 && 'CPU cores 2 or fewer',
+    coarse && (nav.deviceMemory ?? 8) <= 4 && 'touch device reporting 4 GB memory or less',
+    coarse && (nav.hardwareConcurrency ?? 8) <= 4 && 'touch device reporting 4 CPU cores or fewer',
+    !webgl && 'no WebGL',
+  ].filter(Boolean);
+  const box = document.createElement('pre');
+  box.style.cssText = 'position:fixed;z-index:99999;left:8px;right:8px;bottom:8px;margin:0;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.85);color:#fff;font:12px/1.45 ui-monospace,Menlo,monospace;white-space:pre-wrap';
+  box.textContent = [
+    `3D: ${!reduce && !lowPower && webgl ? 'ON' : 'OFF'}${force ? ` (forced: ${force})` : ''}`,
+    `CPU cores: ${nav.hardwareConcurrency ?? 'not reported'}`,
+    `memory: ${nav.deviceMemory ?? 'not reported (iPhone and Safari never report it)'}${nav.deviceMemory ? ' GB' : ''}`,
+    `touch screen: ${coarse}`,
+    `data saver: ${Boolean(conn?.saveData)}`,
+    `reduce motion: ${reduce}`,
+    `WebGL: ${webgl}`,
+    blockers.length ? `default rules block 3D because: ${blockers.join('; ')}` : 'default rules allow 3D on this device',
+  ].join('\n');
+  document.body.appendChild(box);
+}
+if (query.has('debug3d')) showDebug();
 
 async function boot() {
   // Native scrolling only: the pinned sections use CSS sticky, and a smooth-scroll library on top of it

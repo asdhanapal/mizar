@@ -8,7 +8,7 @@ import {
   WebGLRenderer,
 } from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
-import { buildCards, buildLaptop, buildSaas, makeCtx, makeNetwork, NETS, type Built, type Ctx } from './stage';
+import { buildAgent, buildCards, buildLaptop, buildSaas, makeCtx, makeNetwork, NETS, type Built, type Ctx } from './stage';
 import { buildPhone, clamp01, drawDetected, drawRecording, drawSynced, easeOutCubic, lerp, smooth, through } from './scene';
 import { chapterAt, phases, type Section } from './timeline';
 
@@ -40,7 +40,7 @@ function buildCore(c: Ctx): Built {
 }
 
 /** How far below its resting spot each object sits while centred. The first peeks in from the bottom; the rest rise to mid-screen. */
-const DROP = [2.6, 0.7, 0.7, 0.7];
+const DROP = [2.6, 0.7, 0.7, 0.7, 0.7];
 
 const yieldToBrowser = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
@@ -75,6 +75,7 @@ export async function mountShowcase(canvas: HTMLCanvasElement): Promise<Showcase
   const ctx = makeCtx(renderer);
   const objects: { built: Built; holder: Group; orbit: ReturnType<typeof makeNetwork> }[] = [];
   for (const { build, palette } of [
+    { build: buildAgent, palette: 'agent' },
     { build: buildSaas, palette: 'saas' },
     { build: buildCards, palette: 'cards' },
     { build: buildLaptop, palette: 'laptop' },

@@ -7,6 +7,7 @@ import Abstract from '../components/Abstract.astro';
 import DashMock from '../components/art/DashMock.astro';
 import SerpMock from '../components/art/SerpMock.astro';
 import CodeWindow from '../components/art/CodeWindow.astro';
+import AgentMock from '../components/art/AgentMock.astro';
 import tileWhatsapp from '../assets/tiles/tile-whatsapp.png';
 import tileCloud from '../assets/tiles/tile-cloud.png';
 import gsquare from '../assets/clients/gsquare-logo.webp';
@@ -20,6 +21,14 @@ const services = await getCollection('services');
 const svcTitle = (id: string) => services.find((s) => s.id === id)?.data.title ?? id;
 
 const showcase = [
+  {
+    key: 'ai', len: 260, Art: AgentMock, href: '/services/ai-agents-automation/', cta: 'Explore AI agents',
+    chapters: [
+      { title: 'AI agents that take action.', text: 'Not a chatbot that answers one question and stops. An agent reads an enquiry, a call or a form, decides what should happen next, and does it, instead of waiting for someone to be free.' },
+      { title: 'Built on the systems we already connect.', text: 'Most AI agent projects get stuck wiring up CRM, WhatsApp and call data. We already build those integrations, so the agent can log a lead, reply on WhatsApp or update a record from day one.' },
+      { title: 'It knows when to stop.', text: 'Anything ambiguous, high-value or sensitive is handed to a person, with the full context attached, not guessed at. Every action is logged, so it is never a black box.' },
+    ],
+  },
   {
     key: 'saas', len: 260, Art: DashMock, href: '/services/saas-development/', cta: 'Explore SaaS development',
     chapters: [
